@@ -1,11 +1,18 @@
 import React from "react";
 import { Input } from "./retroui/Input";
-import { BiSolidBell } from "react-icons/bi";
+import { BiSolidBell, BiSolidFoodMenu } from "react-icons/bi";
 import { RiHeart2Fill } from "react-icons/ri";
 import { PiShoppingBagOpenFill } from "react-icons/pi";
 import { Button } from "./retroui/Button";
+import useAuthStore from "@/stores/useAuthStore";
+import { Popover } from "./retroui/Popover";
+import { Label } from "./retroui/Label";
+import { Select } from "./retroui/Select";
+import { Menu } from "./retroui/Menu";
+import { FaPowerOff } from "react-icons/fa6";
 
 export const Header = () => {
+  const user = useAuthStore((state) => state.user);
   return (
     <div className="flex items-center justify-between">
       <img className="h-20" src="/icon/logo-md.png" />
@@ -14,7 +21,7 @@ export const Header = () => {
         type="text"
         placeholder="Search something..."
       />
-      <div className="flex gap-3">
+      <div className="flex gap-4">
         <text className="">Live Auctions</text>
         <text className="">Categories</text>
         <text className="">Sell</text>
@@ -24,10 +31,32 @@ export const Header = () => {
         <RiHeart2Fill />
         <PiShoppingBagOpenFill />
       </div>
-      <div className="flex gap-3">
-        <Button variant="default"><a href="/sign-in">Sign In</a></Button>
-        <Button variant="outline"><a href="/register">Register</a></Button>
-      </div>
+      {user ? (
+        <Menu>
+          <Menu.Trigger asChild>
+            <Button>{user.username}</Button>
+          </Menu.Trigger>
+          <Menu.Content className="min-w-38 ">
+            <Menu.Item className="text-lg gap-3">
+              <BiSolidFoodMenu />
+              Dashboard
+            </Menu.Item>
+            <Menu.Item className="text-lg gap-3">
+              <FaPowerOff />
+              Sign Out
+            </Menu.Item>
+          </Menu.Content>
+        </Menu>
+      ) : (
+        <div className="flex gap-3">
+          <Button variant="default">
+            <a href="/sign-in">Sign In</a>
+          </Button>
+          <Button variant="outline">
+            <a href="/register">Register</a>
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

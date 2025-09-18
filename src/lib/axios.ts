@@ -32,7 +32,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     const errorMessage = "Something went wrong";
     if (error.response.data) {
-      throw { ...error.response.data };
+      throw error.response.data;
     } else {
       throw { ...error, message: errorMessage };
     }

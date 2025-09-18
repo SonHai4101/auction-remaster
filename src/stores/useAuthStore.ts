@@ -29,13 +29,11 @@ const useAuthStore = create<AuthStore>()(
       user: null,
       isAuthenticated: false,
 
-      logIn: async (usename, password) => {
+      logIn: async (username, password) => {
         const res = await axiosInstance.post(`/auth/login`, {
-          usename,
+          username,
           password,
         });
-        console.log("res", res);
-        
         if (res.status === HttpStatusCode.Ok) {
           const { accessToken, user } = res.data;
           sessionStorage.setItem("accessToken", accessToken);
@@ -45,14 +43,14 @@ const useAuthStore = create<AuthStore>()(
             isAuthenticated: true,
           });
         }
-        return res.data; // Return the user data, accessToken, and refreshToken
+        return res.data;
       },
 
-      register: async (email, username, password) => {
+      register: async (username, password, email) => {
         const res = await axiosInstance.post("/auth/register", {
-          email,
           username,
           password,
+          email,
         });
         return res.data;
       },

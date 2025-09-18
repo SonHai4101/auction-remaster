@@ -1,39 +1,43 @@
-import { Outlet } from "react-router";
+import useAuthStore from "@/stores/useAuthStore";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router";
 
 export const ClientLayout = () => {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   const { token } = useAuthStore();
-//   const { user } = useAuthStore();
-//   const queryClient = useQueryClient();
-//   const { initializeMQTT } = useMqttStore();
-//   useEffect(() => {
-//     if (!user) return;
+  //   const navigate = useNavigate();
+  //   const location = useLocation();
+  //   const { token } = useAuthStore();
+  //   const { user } = useAuthStore();
+  //   const queryClient = useQueryClient();
+  //   const { initializeMQTT } = useMqttStore();
+  //   useEffect(() => {
+  //     if (!user) return;
 
-//     if (user.role === "business") {
-//       NiceModal.hide(BusinessModal);
+  //     if (user.role === "business") {
+  //       NiceModal.hide(BusinessModal);
 
-//       if (location.pathname === "/profile/register-business") {
-//         navigate("/profile");
-//       }
-//     }
+  //       if (location.pathname === "/profile/register-business") {
+  //         navigate("/profile");
+  //       }
+  //     }
 
-//     if (user.rank === "none") {
-//       if (location.pathname.startsWith("/profile/exam/")) {
-//         navigate("/profile");
-//       }
-//     }
-//   }, [user, location.pathname, navigate]);
+  //     if (user.rank === "none") {
+  //       if (location.pathname.startsWith("/profile/exam/")) {
+  //         navigate("/profile");
+  //       }
+  //     }
+  //   }, [user, location.pathname, navigate]);
 
-//   useEffect(() => {
-//     initializeMQTT(queryClient);
-//   }, [user, queryClient, initializeMQTT]);
+  //   useEffect(() => {
+  //     initializeMQTT(queryClient);
+  //   }, [user, queryClient, initializeMQTT]);
 
-//   useEffect(() => {
-//     if (!token) {
-//       navigate("/login");
-//     }
-//   }, [token, navigate]);
+  const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      navigate("/sign-in");
+    }
+  }, [user]);
 
   return (
     <div className="">

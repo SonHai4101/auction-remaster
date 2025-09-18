@@ -5,6 +5,7 @@ import { Text } from "@/components/retroui/Text";
 import useAuthStore from "@/stores/useAuthStore";
 import { useState } from "react";
 import { MdEmail } from "react-icons/md";
+import { PiEyeClosedBold, PiEyesFill } from "react-icons/pi";
 import { RiKeyFill } from "react-icons/ri";
 import { useNavigate } from "react-router";
 
@@ -13,6 +14,11 @@ export const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { logIn } = useAuthStore();
+  const [isVisible, setIsvisible] = useState(false);
+
+  const toggle = () => {
+    setIsvisible(!isVisible);
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Logging in with:", { username, password });
@@ -47,7 +53,7 @@ export const SignIn = () => {
           <Input
             type="text"
             id="text"
-            placeholder="Charmander"
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -57,21 +63,34 @@ export const SignIn = () => {
             <RiKeyFill />
             Password
           </Label>
-          <Input
-            type="password"
-            id="password"
-            placeholder="Charmander"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="relative">
+            <Input
+              type={isVisible ? "text" : "password"}
+              id="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <span
+              className="absolute top-1/2 transform -translate-y-1/2 right-4"
+              onClick={toggle}
+            >
+              {isVisible ? <PiEyesFill /> : <PiEyeClosedBold />}
+            </span>
+          </div>
         </div>
         <div className="flex justify-between">
-          <Text as="h6">Already have an account?</Text>
+          <Text as="h6" className="hover:underline cursor-pointer">
+            <a href="/register">Register</a>
+          </Text>
           <Text className="text-amber-600 hover:underline cursor-pointer">
-            <a href="/sign-in">Sign In</a>
+            <a href="#">Forgot Password?</a>
           </Text>
         </div>
-        <Button type="submit" className="w-[100px] bg-input hover:bg-ring">
+        <Button
+          type="submit"
+          className="w-[100px] text-center bg-input hover:bg-ring"
+        >
           Sign In
         </Button>
       </form>
