@@ -10,9 +10,16 @@ import { Label } from "./retroui/Label";
 import { Select } from "./retroui/Select";
 import { Menu } from "./retroui/Menu";
 import { FaPowerOff } from "react-icons/fa6";
+import { useNavigate } from "react-router";
 
 export const Header = () => {
   const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
+  const { logOut } = useAuthStore();
+  const handleLogOut = () => {
+    logOut();
+    navigate("/sign-in");
+  };
   return (
     <div className="flex items-center justify-between">
       <img className="h-20" src="/icon/logo-md.png" />
@@ -37,11 +44,16 @@ export const Header = () => {
             <Button>{user.username}</Button>
           </Menu.Trigger>
           <Menu.Content className="min-w-38 ">
-            <Menu.Item className="text-lg gap-3">
-              <BiSolidFoodMenu />
-              Dashboard
-            </Menu.Item>
-            <Menu.Item className="text-lg gap-3">
+            {user.role === "ADMIN" && (
+              <Menu.Item
+                className="text-lg gap-3"
+                onClick={() => navigate("/dashboard")}
+              >
+                <BiSolidFoodMenu />
+                Dashboard
+              </Menu.Item>
+            )}
+            <Menu.Item className="text-lg gap-3" onClick={handleLogOut}>
               <FaPowerOff />
               Sign Out
             </Menu.Item>

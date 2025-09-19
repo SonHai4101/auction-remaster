@@ -1,6 +1,7 @@
 import useAuthStore from "@/stores/useAuthStore";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
+import { Loader } from "../retroui/Loader";
 
 export const ClientLayout = () => {
   //   const navigate = useNavigate();
@@ -31,13 +32,27 @@ export const ClientLayout = () => {
   //     initializeMQTT(queryClient);
   //   }, [user, queryClient, initializeMQTT]);
 
-  const user = useAuthStore((state) => state.user);
+  // const user = useAuthStore((state) => state.user);
+
   const navigate = useNavigate();
+  const { user, isLoading, loadFromSession } = useAuthStore();
+
   useEffect(() => {
-    if (!user) {
+    loadFromSession();
+  }, []);
+
+  useEffect(() => {
+    if (isLoading && !user) {
       navigate("/sign-in");
     }
-  }, [user]);
+  }, [isLoading, user, navigate]);
+
+  if (!isLoading)
+    return (
+      <div className="h-screen w-screen grid place-content-center">
+        <Loader />
+      </div>
+    );
 
   return (
     <div className="">

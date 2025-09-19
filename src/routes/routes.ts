@@ -3,6 +3,7 @@ import { Register } from "@/pages/auth/Register";
 import HomePage from "@/pages/HomePage";
 import { index } from "@/pages/main";
 import type { ComponentType } from "react";
+import { Dashboard } from "@/pages/main/admin/Dashboard";
 
 type RouteComponent = ComponentType<any>;
 
@@ -28,12 +29,22 @@ export const privateRoutes: PrivateRoutes = {
         component: index,
         requireRedirect: true,
       },
+      // {
+      //   path: "/dashboard",
+      //   component: Dashboard,
+      //   requireRedirect: true,
+      // },
     ],
   },
+  admin: {
+    path: "/dashboard",
+    component: Dashboard,
+    requireRedirect: false,
+  }
   //   session: {
   //     path: "/session",
   //     component: Session,
-  //   },
+  //   },requireRedirect
   //   vipSession: {
   //     path: "/vip-session",
   //     component: Session,
