@@ -5,7 +5,7 @@ import { index } from "@/pages/main";
 import type { ComponentType } from "react";
 import { AdminPage } from "@/pages/main/admin/AdminPage";
 import { Dashboard } from "@/pages/main/admin/Dashboard";
-import { Products } from "@/pages/main/admin/Products";
+import { Categories } from "@/pages/main/admin/Categories";
 import { Inbox } from "@/pages/main/admin/Inbox";
 import { User } from "@/pages/main/admin/User";
 
@@ -59,8 +59,8 @@ export const privateRoutes: PrivateRoutes = {
         component: User,
       },
       {
-        path: "products",
-        component: Products,
+        path: "categories",
+        component: Categories,
       },
     ],
   },

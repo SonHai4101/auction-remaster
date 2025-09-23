@@ -15,7 +15,7 @@ export const useCreateAuction = () => {
       productId: string;
     }) => apiService.admin.createAuction({ ...body }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [keys.auction] });
+      queryClient.invalidateQueries({ queryKey: [keys.auctions] });
     },
   });
 };

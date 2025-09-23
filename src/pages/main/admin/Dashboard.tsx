@@ -1,12 +1,14 @@
 import { Button } from "@/components/retroui/Button";
 import { Card } from "@/components/retroui/Card";
 import { Dialog } from "@/components/retroui/Dialog";
-import { Input } from "@/components/retroui/Input";
 import { Text } from "@/components/retroui/Text";
 import { useCreateAuction } from "@/hooks/admin/useAdmin";
 import { TiPlus } from "react-icons/ti";
 import { useForm } from "react-hook-form";
-import { toIOSTime } from "@/utils/ConvertToIOSTime";
+import { formatNumber, toIOSTime } from "@/utils/ConvertUnit";
+import { useGetAllAuctions } from "@/hooks/useAuction";
+import { DynamicForm } from "@/components/admin/DynamicForm";
+import { useState } from "react";
 
 type AuctionForm = {
   title: string;
@@ -19,70 +21,71 @@ type AuctionForm = {
 };
 
 export const Dashboard = () => {
-  const autionCard = [
+  const auctionFields = [
     {
-      id: 1,
-      img: "/icon/item-icon.png",
-      name: "Vintage Ferrari Model",
-      description: "Rare 1:18 scale Ferrari collection from the 1960s",
-      currentBid: "$850",
-      bidder: "12 bidders",
+      name: "title",
+      label: "Title",
+      required: true,
+      placeholder: "Type title",
     },
     {
-      id: 2,
-      img: "/icon/item-icon.png",
-      name: "Vintage Ferrari Model",
-      description: "Rare 1:18 scale Ferrari collection from the 1960s",
-      currentBid: "$850",
-      bidder: "12 bidders",
+      name: "description",
+      label: "Description",
+      placeholder: "Type description",
+    },
+    { name: "startPrice", label: "Start Price", type: "number" },
+    {
+      name: "buyNowPrice",
+      label: "Buy Now Price",
+      type: "number",
+      required: true,
     },
     {
-      id: 3,
-      img: "/icon/item-icon.png",
-      name: "Vintage Ferrari Model",
-      description: "Rare 1:18 scale Ferrari collection from the 1960s",
-      currentBid: "$850",
-      bidder: "12 bidders",
+      name: "startTime",
+      label: "Start Time",
+      type: "datetime-local",
+      required: true,
     },
     {
-      id: 4,
-      img: "/icon/item-icon.png",
-      name: "Vintage Ferrari Model",
-      description: "Rare 1:18 scale Ferrari collection from the 1960s",
-      currentBid: "$850",
-      bidder: "12 bidders",
+      name: "endTime",
+      label: "End Time",
+      type: "datetime-local",
+      required: true,
+    },
+    {
+      name: "productId",
+      label: "Product Id",
+      required: true,
+      placeholder: "Type product Id",
     },
   ];
+  const { data: allAuctions } = useGetAllAuctions({ page: 1, limit: 9999 });
   const { mutate: createAuction } = useCreateAuction();
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
+  const [open, setOpen] = useState(false);
 
-  //   createAuction();
-  // }
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<AuctionForm>();
+  console.log("all auction", allAuctions);
+
   const onSubmit = (data: AuctionForm) => {
-    const payload = {
-      ...data,
-      startTime: toIOSTime(data.startTime),
-      endTime: toIOSTime(data.endTime),
-    };
-    createAuction(payload, {
-      onSuccess: () => {
-        reset();
+    createAuction(
+      {
+        ...data,
+        startPrice: Number(data.startPrice),
+        buyNowPrice: Number(data.buyNowPrice),
+        startTime: toIOSTime(data.startTime),
+        endTime: toIOSTime(data.endTime),
       },
-    });
+        {
+        onSuccess: () => {
+          setOpen(false)
+        },
+      }
+    );
   };
-  console.log(errors);
   return (
-    <div className="">
+    <div>
       <div className="flex justify-between">
         <Text as="h2">Dashboard</Text>
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <Dialog.Trigger asChild>
             <Button>
               <TiPlus />
@@ -93,134 +96,62 @@ export const Dashboard = () => {
             <Dialog.Header position={"fixed"}>
               <Text as="h5">Create a new auction</Text>
             </Dialog.Header>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
-            >
-              <div className="flex flex-col p-4 gap-4">
-                <div className="flex-col gap-2">
-                  <label htmlFor="name">
-                    Title <span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    placeholder="Type title"
-                    {...register("title", { required: "Title is required" })}
-                  />
-                  {errors.title && (
-                    <span className="text-red-500">{errors.title.message}</span>
-                  )}
-                </div>
-                <div className="flex-col gap-2">
-                  <label htmlFor="name">Description</label>
-                  <Input
-                    placeholder="Type description"
-                    {...register("description")}
-                  />
-                </div>
-                <div className="flex-col gap-2">
-                  <label htmlFor="name">Start Price</label>
-                  <Input
-                    type="number"
-                    placeholder="Type start price"
-                    {...register("startPrice", { valueAsNumber: true })}
-                  />
-                </div>
-                <div className="flex-col gap-2">
-                  <label htmlFor="name">
-                    Buy Now Price <span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    placeholder="Type buy now price"
-                    {...register("buyNowPrice", {
-                      required: "Buy Now Price is required",
-                      valueAsNumber: true,
-                    })}
-                  />
-                  {errors.buyNowPrice && (
-                    <span className="text-red-500">
-                      {errors.buyNowPrice.message}
-                    </span>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <div className="flex-col gap-2">
-                    <label htmlFor="name">
-                      Start Time <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      type="datetime-local"
-                      {...register("startTime", {
-                        required: "start Time is required",
-                      })}
-                    />
-                    {errors.startTime && (
-                      <span className="text-red-500">
-                        {errors.startTime.message}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex-col gap-2">
-                    <label htmlFor="name">
-                      End Time <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      type="datetime-local"
-                      {...register("endTime", {
-                        required: "End Time is required",
-                      })}
-                    />
-                    {errors.endTime && (
-                      <span className="text-red-500">
-                        {errors.endTime.message}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex-col gap-2">
-                  <label htmlFor="name">
-                    Product Id <span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    placeholder="Type product Id"
-                    {...register("productId", {
-                      required: "Product Id isbuyNowPrice required",
-                    })}
-                  />
-                  {errors.productId && (
-                    <span className="text-red-500">
-                      {errors.productId.message}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <Dialog.Footer>
-                <Dialog.Trigger asChild>
-                  <Button type="submit">Create</Button>
-                </Dialog.Trigger>
-              </Dialog.Footer>
-            </form>
+            <DynamicForm
+              fields={auctionFields}
+              onSubmit={onSubmit}
+              submitLabel="Create"
+            />
           </Dialog.Content>
         </Dialog>
       </div>
 
       <div className="grid grid-cols-4 gap-4 mt-5 p-5 border-4 border-double">
-        {autionCard.map((item) => (
-          <Card className="max-w-[350px] shadow-none hover:shadow-none">
-            <Card.Content className="pb-0">
-              <img src={item.img} className="w-full h-full" alt="Gameboy" />
-            </Card.Content>
-            <Card.Header className="pb-0">
-              <Card.Title>{item.name}</Card.Title>
-            </Card.Header>
-            <Card.Content className="flex flex-col gap-3 items-center pt-0">
-              <p className="text-lg font-semibold">{item.description}</p>
-              <div className="flex justify-between items-center w-full">
-                <p className="text-lg font-semibold">{item.currentBid}</p>
-                <Button>Add to cart</Button>
-              </div>
-            </Card.Content>
-          </Card>
-        ))}
+        {allAuctions &&
+          allAuctions?.data?.map((item) => (
+            <Card
+              className="max-w-[350px] shadow-none hover:shadow-none"
+              key={item.id}
+            >
+              <Card.Content className="pb-0">
+                <img
+                  src="/public/icon/item-icon.png"
+                  className="w-full h-full"
+                  alt="Gameboy"
+                />
+              </Card.Content>
+              <Card.Header className="pb-0">
+                <Card.Title>{item.product.title}</Card.Title>
+              </Card.Header>
+              <Card.Content className="flex flex-col gap-3 pt-0">
+                <p className="text-lg font-semibold">{item.description}</p>
+
+                <div className="flex flex-col">
+                  <div className="flex justify-between">
+                    <p className="text-lg font-semibold">Current:</p>
+                    <p className="text-lg font-semibold">
+                      ${" "}
+                      {item.bids && item.bids?.[0]?.bids
+                        ? formatNumber(item.bids?.[0]?.bids)
+                        : formatNumber(Number(item.startPrice))}
+                    </p>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <p className="text-lg font-semibold">Buy now:</p>
+                    <p className="text-lg font-semibold">
+                      $ {formatNumber(Number(item.buyNowPrice))}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p>
+                    Status: <span className="text-red-500"> {item.status}</span>
+                  </p>
+                  <Button className="w-fit">Bid</Button>
+                </div>
+              </Card.Content>
+            </Card>
+          ))}
       </div>
     </div>
   );

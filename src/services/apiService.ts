@@ -30,9 +30,9 @@ export const apiService = {
       sortBy?: string;
       sortOrder?: string;
     }): Promise<{
-      data: Auction;
+      data: Auction[];
       pagination: Pagination;
-    }> => axiosInstance.get("auctions", { params: query }),
+    }> => axiosInstance.get("auctions/", { params: query }).then((res) => res.data),
 
     getAuctionById: (params: { id: string }): Promise<Auction> =>
       axiosInstance.get(`auctions/${params.id}`),

@@ -1,5 +1,5 @@
 import { FaBoxOpen, FaPowerOff } from "react-icons/fa6";
-import { Avatar } from "./retroui/Avatar";
+import { Avatar } from "../retroui/Avatar";
 import useAuthStore from "@/stores/useAuthStore";
 import { Link } from "react-router";
 import { HiUsers } from "react-icons/hi2";
@@ -18,9 +18,9 @@ export const AdminSidebar = () => {
     { id: 3, name: "Users", icon: <HiUsers />, src: "/admin-page/users" },
     {
       id: 4,
-      name: "Products",
+      name: "Categories",
       icon: <FaBoxOpen />,
-      src: "/admin-page/products",
+      src: "/admin-page/categories",
     },
   ];
   const { user } = useAuthStore();
