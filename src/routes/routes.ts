@@ -3,7 +3,11 @@ import { Register } from "@/pages/auth/Register";
 import HomePage from "@/pages/HomePage";
 import { index } from "@/pages/main";
 import type { ComponentType } from "react";
+import { AdminPage } from "@/pages/main/admin/AdminPage";
 import { Dashboard } from "@/pages/main/admin/Dashboard";
+import { Products } from "@/pages/main/admin/Products";
+import { Inbox } from "@/pages/main/admin/Inbox";
+import { User } from "@/pages/main/admin/User";
 
 type RouteComponent = ComponentType<any>;
 
@@ -37,10 +41,29 @@ export const privateRoutes: PrivateRoutes = {
     ],
   },
   admin: {
-    path: "/dashboard",
-    component: Dashboard,
+    path: "/admin-page",
+    component: AdminPage,
     requireRedirect: false,
-  }
+    children: [
+      {
+        path: "",
+        component: Dashboard,
+        requireRedirect: true,
+      },
+      {
+        path: "inbox",
+        component: Inbox,
+      },
+      {
+        path: "users",
+        component: User,
+      },
+      {
+        path: "products",
+        component: Products,
+      },
+    ],
+  },
   //   session: {
   //     path: "/session",
   //     component: Session,

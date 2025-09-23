@@ -47,7 +47,7 @@ export const Header = () => {
             {user.role === "ADMIN" && (
               <Menu.Item
                 className="text-lg gap-3"
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate("/admin-page")}
               >
                 <BiSolidFoodMenu />
                 Dashboard
