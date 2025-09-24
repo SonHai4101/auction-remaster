@@ -19,3 +19,21 @@ export const useCreateAuction = () => {
     },
   });
 };
+
+export const useGetAllCategories = () => {
+  return useQuery({
+    queryKey: [keys.categories],
+    queryFn: () => apiService.admin.getAllCategories(),
+  });
+};
+
+export const useCreateCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { name: string; description: string }) =>
+      apiService.admin.createCategory(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [keys.categories] });
+    },
+  });
+};

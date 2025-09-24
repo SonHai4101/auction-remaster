@@ -4,11 +4,11 @@ import { Dialog } from "@/components/retroui/Dialog";
 import { Text } from "@/components/retroui/Text";
 import { useCreateAuction } from "@/hooks/admin/useAdmin";
 import { TiPlus } from "react-icons/ti";
-import { useForm } from "react-hook-form";
 import { formatNumber, toIOSTime } from "@/utils/ConvertUnit";
 import { useGetAllAuctions } from "@/hooks/useAuction";
 import { DynamicForm } from "@/components/admin/DynamicForm";
 import { useState } from "react";
+import { Loader } from "@/components/retroui/Loader";
 
 type AuctionForm = {
   title: string;
@@ -59,7 +59,7 @@ export const Dashboard = () => {
       placeholder: "Type product Id",
     },
   ];
-  const { data: allAuctions } = useGetAllAuctions({ page: 1, limit: 9999 });
+  const { data: allAuctions, isLoading } = useGetAllAuctions({ page: 1, limit: 9999 });
   const { mutate: createAuction } = useCreateAuction();
   const [open, setOpen] = useState(false);
 
@@ -106,6 +106,9 @@ export const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-4 gap-4 mt-5 p-5 border-4 border-double">
+        {isLoading && (
+          <Loader />
+        )}
         {allAuctions &&
           allAuctions?.data?.map((item) => (
             <Card

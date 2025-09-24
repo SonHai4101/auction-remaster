@@ -120,7 +120,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
           );
         })}
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end px-4">
         <Button type="submit">{submitLabel}</Button>
       </div>
     </form>

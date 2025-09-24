@@ -1,4 +1,4 @@
-import type { Auction, Pagination, User } from "@/constants/types";
+import type { Auction, Category, Pagination, User } from "@/constants/types";
 import { axiosInstance } from "@/lib/axios";
 
 export const apiService = {
@@ -19,6 +19,10 @@ export const apiService = {
       endTime: string;
       productId: string;
     }) => axiosInstance.post("auctions/", body),
+    createCategory: (body: { name: string; description: string }) =>
+      axiosInstance.post("category/", body),
+    getAllCategories: (): Promise<Category[]> =>
+      axiosInstance.get("category/").then((res) => res.data),
   },
 
   auction: {
@@ -32,7 +36,8 @@ export const apiService = {
     }): Promise<{
       data: Auction[];
       pagination: Pagination;
-    }> => axiosInstance.get("auctions/", { params: query }).then((res) => res.data),
+    }> =>
+      axiosInstance.get("auctions/", { params: query }).then((res) => res.data),
 
     getAuctionById: (params: { id: string }): Promise<Auction> =>
       axiosInstance.get(`auctions/${params.id}`),
