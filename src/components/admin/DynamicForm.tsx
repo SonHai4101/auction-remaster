@@ -1,11 +1,6 @@
-import { Text } from "../retroui/Text";
-import { Dialog } from "../retroui/Dialog";
 import { Button } from "../retroui/Button";
-import { TiPlus } from "react-icons/ti";
 import { Input } from "../retroui/Input";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { toIOSTime } from "@/utils/ConvertUnit";
-import { useCreateAuction } from "@/hooks/admin/useAdmin";
 import type React from "react";
 
 type Field = {
@@ -14,24 +9,27 @@ type Field = {
   type?: string;
   placeholder?: string;
   required?: boolean;
+  readOnly?: boolean;
 };
 
 interface DynamicFormProps {
   fields: Field[];
   onSubmit: (value: any) => void;
   submitLabel?: string;
+  defaultValues?: Record<string, any>;
 }
 
 export const DynamicForm: React.FC<DynamicFormProps> = ({
   fields,
   onSubmit,
   submitLabel = "Submit",
+  defaultValues = {},
 }) => {
   const {
     register,
-    handleSubmit, 
+    handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({ defaultValues });
 
   const handleFormSubmit: SubmitHandler<any> = (data) => {
     onSubmit(data);
@@ -43,23 +41,6 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       onSubmit={handleSubmit(handleFormSubmit)}
     >
       <div className="flex flex-col p-4 gap-4">
-        {/* {fields.map((field) => (
-          <div className="flex flex-col gap-2" key={field.name}>
-            <label htmlFor={field.name}>
-              {field.label}{" "}
-              {field.required && <span className="text-red-500">*</span>}
-            </label>
-            <Input
-              id={field.name}
-              type={field.type || "text"}
-              placeholder={field.placeholder}
-              {...register(field.name, { required: field.required })}
-            />
-            {errors[field.name] && (
-              <p className="text-red-500 text-sm">{field.label} is required</p>
-            )}
-          </div>
-        ))} */}
         {fields.map((field, index) => {
           // if current and next field are datetime-local -> render them in one row
           if (
@@ -109,6 +90,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 id={field.name}
                 type={field.type || "text"}
                 placeholder={field.placeholder}
+                readOnly={field.readOnly}
                 {...register(field.name, { required: field.required })}
               />
               {errors[field.name] && (

@@ -2,6 +2,19 @@ import type { Auction, Category, Pagination, User } from "@/constants/types";
 import { axiosInstance } from "@/lib/axios";
 
 export const apiService = {
+  default: {
+    upload: (body: { files: File[] }) => {
+      const formData = new FormData();
+      body.files.forEach((file) => {
+        formData.append("files", file);
+      });
+      return axiosInstance.post("upload/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
+  },
   user: {
     getUser: (): Promise<User> => axiosInstance.get("/auth/me"),
   },
@@ -23,6 +36,8 @@ export const apiService = {
       axiosInstance.post("category/", body),
     getAllCategories: (): Promise<Category[]> =>
       axiosInstance.get("category/").then((res) => res.data),
+    getCategoryById: (params: { id: string }): Promise<Category> =>
+      axiosInstance.get(`category/${params.id}`).then((res) => res.data),
   },
 
   auction: {
@@ -38,8 +53,16 @@ export const apiService = {
       pagination: Pagination;
     }> =>
       axiosInstance.get("auctions/", { params: query }).then((res) => res.data),
-
     getAuctionById: (params: { id: string }): Promise<Auction> =>
       axiosInstance.get(`auctions/${params.id}`),
+  },
+
+  products: {
+    createProduct: (body: {
+      categoryId: string;
+      title: string;
+      description: string;
+      images: string[];
+    }) => axiosInstance.post("products/", body),
   },
 };

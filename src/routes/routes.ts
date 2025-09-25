@@ -66,13 +66,13 @@ export const privateRoutes: PrivateRoutes = {
         component: Categories,
         children: [
           {
-            path: "cars",
+            path: ":categoryId",
             component: Cars,
           },
-          {
-            path: "furnitures",
-            component: Furnitures,
-          },
+          // {
+          //   path: "furnitures",
+          //   component: Furnitures,
+          // },
         ],
       },
     ],

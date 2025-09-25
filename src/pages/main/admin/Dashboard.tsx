@@ -117,7 +117,7 @@ export const Dashboard = () => {
             >
               <Card.Content className="pb-0">
                 <img
-                  src="/public/icon/item-icon.png"
+                  src="/icon/item-icon.png"
                   className="w-full h-full"
                   alt="Gameboy"
                 />

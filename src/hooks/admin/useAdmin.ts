@@ -27,6 +27,13 @@ export const useGetAllCategories = () => {
   });
 };
 
+export const useGetCategoryById = (id: string) => {
+  return useQuery({
+    queryKey: [keys.category],
+    queryFn: () => apiService.admin.getCategoryById({ id }),
+  });
+};
+
 export const useCreateCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({

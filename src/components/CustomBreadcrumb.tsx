@@ -1,12 +1,19 @@
+import { useGetCategoryById } from "@/hooks/admin/useAdmin";
 import { Breadcrumb } from "./retroui/Breadcrumb";
 import { Slash } from "lucide-react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useParams } from "react-router";
 
 interface CustomBreadcrumbProps {
   startFrom?: string;
 }
 
 export const CustomBreadcrumb = ({ startFrom }: CustomBreadcrumbProps) => {
+  const { categoryId } = useParams();
+  const { data: categoryDetail } = useGetCategoryById(
+    categoryId || "undefined"
+  );
+  console.log("category detail", categoryDetail);
+  
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter(Boolean);
 
@@ -15,7 +22,7 @@ export const CustomBreadcrumb = ({ startFrom }: CustomBreadcrumbProps) => {
     startIndex >= 0 ? pathnames.slice(startIndex) : pathnames;
   return (
     <>
-      <Breadcrumb className="">
+      <Breadcrumb>
         <Breadcrumb.List>
           {visibleSegments.map((segment, index) => {
             const to =
@@ -29,7 +36,10 @@ export const CustomBreadcrumb = ({ startFrom }: CustomBreadcrumbProps) => {
                 <Breadcrumb.Item>
                   {isLast ? (
                     <Breadcrumb.Page>
-                      {segment.replace(/-/g, " ")}
+                      {/* {segment.replace(/-/g, " ")} */}
+                      {categoryId && segment === categoryId
+                        ? categoryDetail?.name || "Loading..."
+                        : segment.replace(/-/g, " ")}
                     </Breadcrumb.Page>
                   ) : (
                     <Breadcrumb.Link asChild>

@@ -35,8 +35,6 @@ export const Categories = () => {
   const { data: allCategories, isLoading } = useGetAllCategories();
   const { mutate: createCategory } = useCreateCategory();
 
-  console.log("category", allCategories);
-
   const onSubmit = (data: CategoryForm) => {
     createCategory(data, {
       onSuccess: () => {
@@ -83,7 +81,7 @@ export const Categories = () => {
                   key={category.id}
                   className="border-2 border-dashed h-[100px] grid place-content-center hover:cursor-pointer hover:underline"
                   onClick={() =>
-                    navigate(`/admin-page/categories/${slugify(category.name)}`)
+                    navigate(`/admin-page/categories/${category.id}`)
                   }
                 >
                   <Text as="h3">{category.name}</Text>
