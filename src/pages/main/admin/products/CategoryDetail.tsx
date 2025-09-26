@@ -180,7 +180,6 @@ export const CategoryDetail = () => {
                     <Button className="bg-destructive text-white hover:bg-destructive/90">
                       <PiTrashSimpleFill className="h-4 w-4 mr-2" /> Delete
                     </Button>
-
                     <Button className="bg-amber-600 text-white hover:bg-amber-500">
                       <VscEdit className="h-4 w-4 mr-2" /> Edit
                     </Button>

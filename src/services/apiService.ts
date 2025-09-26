@@ -74,5 +74,16 @@ export const apiService = {
       description: string;
       images: string[];
     }) => axiosInstance.post("products/", body),
+    updateProduct: (
+      productId: string,
+      body: {
+        categoryId: string;
+        title: string;
+        description: string;
+        images?: string[];
+      }
+    ) => axiosInstance.put(`products/${productId}`, body),
+    deleteProduct: (productId: string) =>
+      axiosInstance.delete(`products/&${productId}`),
   },
 };

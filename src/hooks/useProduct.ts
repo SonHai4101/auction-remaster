@@ -17,3 +17,15 @@ export const useCreateProduct = () => {
     },
   });
 };
+
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (productId: string) =>
+      apiService.products.deleteProduct(productId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [keys.products] });
+      queryClient.invalidateQueries({ queryKey: [keys.categories] });
+    },
+  });
+};
