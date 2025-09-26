@@ -8,9 +8,7 @@ import { Dashboard } from "@/pages/main/admin/Dashboard";
 import { Categories } from "@/pages/main/admin/Categories";
 import { Inbox } from "@/pages/main/admin/Inbox";
 import { User } from "@/pages/main/admin/User";
-import { Products } from "@/pages/main/admin/products/Products";
-import { Cars } from "@/pages/main/admin/products/Cars";
-import { Furnitures } from "@/pages/main/admin/products/Furnitures";
+import { CategoryDetail } from "@/pages/main/admin/products/CategoryDetail";
 
 type RouteComponent = ComponentType<any>;
 
@@ -67,7 +65,7 @@ export const privateRoutes: PrivateRoutes = {
         children: [
           {
             path: ":categoryId",
-            component: Cars,
+            component: CategoryDetail,
           },
           // {
           //   path: "furnitures",

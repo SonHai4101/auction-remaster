@@ -1,4 +1,10 @@
-import type { Auction, Category, Pagination, User } from "@/constants/types";
+import type {
+  Auction,
+  Category,
+  Pagination,
+  Product,
+  User,
+} from "@/constants/types";
 import { axiosInstance } from "@/lib/axios";
 
 export const apiService = {
@@ -38,6 +44,10 @@ export const apiService = {
       axiosInstance.get("category/").then((res) => res.data),
     getCategoryById: (params: { id: string }): Promise<Category> =>
       axiosInstance.get(`category/${params.id}`).then((res) => res.data),
+    getProductsByCategoryId: (params: { id: string }): Promise<Product[]> =>
+      axiosInstance
+        .get(`category/${params.id}/products`)
+        .then((res) => res.data),
   },
 
   auction: {

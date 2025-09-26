@@ -1,6 +1,7 @@
 import { keys } from "@/constants/keys";
 import { apiService } from "@/services/apiService";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { use } from "react";
 
 export const useCreateAuction = () => {
   const queryClient = useQueryClient();
@@ -31,6 +32,13 @@ export const useGetCategoryById = (id: string) => {
   return useQuery({
     queryKey: [keys.category],
     queryFn: () => apiService.admin.getCategoryById({ id }),
+  });
+};
+
+export const useGetProductsByCategoryId = (id: string) => {
+  return useQuery({
+    queryKey: [keys.products, id],
+    queryFn: () => apiService.admin.getProductsByCategoryId({ id }),
   });
 };
 

@@ -27,59 +27,66 @@ export interface User {
 // }
 
 export interface Auction {
-  id: string
-  title: string
-  description: string
-  startPrice: string
-  currentPrice: string
-  buyNowPrice: string
-  startTime: string
-  endTime: string
-  status: string
-  finalPrice: any
-  creatorId: string
-  productId: string
-  winnerId: any
-  createdAt: string
-  updatedAt: string
-  creator: Creator
-  product: Product
-  bids: any[]
-  _count: Count
+  id: string;
+  title: string;
+  description: string;
+  startPrice: string;
+  currentPrice: string;
+  buyNowPrice: string;
+  startTime: string;
+  endTime: string;
+  status: string;
+  finalPrice: any;
+  creatorId: string;
+  productId: string;
+  winnerId: any;
+  createdAt: string;
+  updatedAt: string;
+  creator: Creator;
+  product: Product;
+  bids: any[];
+  _count: Count;
 }
 
 export interface Creator {
-  id: string
-  username: string
+  id: string;
+  username: string;
 }
 
 export interface Product {
-  id: string
-  sellerId: string
-  categoryId: string
-  title: string
-  slug: string
-  description: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  sellerId: string;
+  categoryId: string;
+  title: string;
+  slug: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  category: Category;
+  images: Image[];
+}
+
+export interface Image {
+  id: string;
+  url: string;
 }
 
 export interface Count {
-  bids: number
-  watchlist: number
+  bids: number;
+  watchlist: number;
 }
 
 export interface Pagination {
-  page: number
-  limit: number
-  total: number
-  totalPages: number
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }
 
 export interface Category {
-  id: string
-  name: string
-  description: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -2,6 +2,8 @@ import { Button } from "../retroui/Button";
 import { Input } from "../retroui/Input";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type React from "react";
+import { useState } from "react";
+import { Label } from "../retroui/Label";
 
 type Field = {
   name: string;
@@ -9,12 +11,14 @@ type Field = {
   type?: string;
   placeholder?: string;
   required?: boolean;
+  multiple?: boolean;
   readOnly?: boolean;
 };
 
 interface DynamicFormProps {
   fields: Field[];
   onSubmit: (value: any) => void;
+  onFileChange?: (file: File[]) => void;
   submitLabel?: string;
   defaultValues?: Record<string, any>;
 }
@@ -22,14 +26,29 @@ interface DynamicFormProps {
 export const DynamicForm: React.FC<DynamicFormProps> = ({
   fields,
   onSubmit,
+  onFileChange,
   submitLabel = "Submit",
   defaultValues = {},
 }) => {
+  const [images, setImages] = useState<File[]>([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const files = Array.from(e.target.files);
+    setImages((prev) => [...prev, ...files]);
+    if(onFileChange) {
+      onFileChange(files)
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleFormSubmit: SubmitHandler<any> = (data) => {
     onSubmit(data);
@@ -42,6 +61,47 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     >
       <div className="flex flex-col p-4 gap-4">
         {fields.map((field, index) => {
+          if (field.type === "file") {
+            return (
+              <>
+                <div key={field.name}>
+                  <Label htmlFor={field.name}>{field.label}</Label>
+                  <Input
+                    id={field.name}
+                    type="file"
+                    multiple={field.multiple}
+                    placeholder={field.placeholder}
+                    {...register(field.name, { required: field.required })}
+                    onChange={handleFileChange}
+                  />
+                  {errors[field.name] && (
+                    <p className="text-red-500 text-sm">
+                      {field.label} is required
+                    </p>
+                  )}
+                </div>
+                {images.length > 0 && (
+                  <div className="mt-3 flex gap-2">
+                    {images.map((img, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={URL.createObjectURL(img)}
+                          alt={`Selected ${index + 1}`}
+                          className="size-10 object-cover rounded-xl"
+                        />
+                        <button
+                          onClick={() => removeImage(index)}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full size-5 items-center justify-center flex"
+                        >
+                          x
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            );
+          }
           // if current and next field are datetime-local -> render them in one row
           if (
             field.type === "datetime-local" &&
@@ -51,10 +111,10 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
               <div key={field.name} className="flex gap-2 w-full">
                 {[field, fields[index + 1]].map((f) => (
                   <div className="flex flex-col gap-2 w-full" key={f.name}>
-                    <label htmlFor={f.name}>
+                    <Label htmlFor={f.name}>
                       {f.label}{" "}
                       {f.required && <span className="text-red-500">*</span>}
-                    </label>
+                    </Label>
                     <Input
                       id={f.name}
                       type="datetime-local"
@@ -81,24 +141,26 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
           }
 
           return (
-            <div className="flex flex-col gap-2" key={field.name}>
-              <label htmlFor={field.name}>
-                {field.label}{" "}
-                {field.required && <span className="text-red-500">*</span>}
-              </label>
-              <Input
-                id={field.name}
-                type={field.type || "text"}
-                placeholder={field.placeholder}
-                readOnly={field.readOnly}
-                {...register(field.name, { required: field.required })}
-              />
-              {errors[field.name] && (
-                <p className="text-red-500 text-sm">
-                  {field.label} is required
-                </p>
-              )}
-            </div>
+            <>
+              <div className="flex flex-col gap-2" key={field.name}>
+                <Label htmlFor={field.name}>
+                  {field.label}{" "}
+                  {field.required && <span className="text-red-500">*</span>}
+                </Label>
+                <Input
+                  id={field.name}
+                  type={field.type || "text"}
+                  placeholder={field.placeholder}
+                  readOnly={field.readOnly}
+                  {...register(field.name, { required: field.required })}
+                />
+                {errors[field.name] && (
+                  <p className="text-red-500 text-sm">
+                    {field.label} is required
+                  </p>
+                )}
+              </div>
+            </>
           );
         })}
       </div>
