@@ -2,7 +2,7 @@ import { Button } from "../retroui/Button";
 import { Input } from "../retroui/Input";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "../retroui/Label";
 
 type Field = {
@@ -31,9 +31,13 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   defaultValues = {},
 }) => {
   const [images, setImages] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  console.log("exitingImage", existingImages);
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({ defaultValues });
 
@@ -41,8 +45,8 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
     setImages((prev) => [...prev, ...files]);
-    if(onFileChange) {
-      onFileChange(files)
+    if (onFileChange) {
+      onFileChange(files);
     }
   };
 
@@ -50,9 +54,29 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleFormSubmit: SubmitHandler<any> = (data) => {
-    onSubmit(data);
+  const removeExistingImage = (index: number) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
   };
+
+  const handleFormSubmit: SubmitHandler<any> = (data) => {
+    onSubmit({
+      ...data,
+      existingImages,
+      newImages: images,
+    });
+  };
+
+  // useEffect(() => {
+  //   reset(defaultValues);
+  // }, [defaultValues, reset]);
+
+  useEffect(() => {
+    if (defaultValues.images && Array.isArray(defaultValues.images)) {
+      setExistingImages(defaultValues.images);
+    } else {
+      setExistingImages([]);
+    }
+  }, [defaultValues.images]);
 
   return (
     <form
@@ -80,6 +104,25 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                     </p>
                   )}
                 </div>
+                {existingImages.length > 0 && (
+                  <div>
+                    {existingImages.map((url, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={url}
+                          alt={`Existing ${index + 1}`}
+                          className="size-10 object-cover rounded-xl"
+                        />
+                        <button
+                          onClick={() => removeExistingImage(index)}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full size-5 items-center justify-center flex"
+                        >
+                          x
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {images.length > 0 && (
                   <div className="mt-3 flex gap-2">
                     {images.map((img, index) => (

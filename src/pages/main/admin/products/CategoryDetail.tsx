@@ -7,7 +7,11 @@ import { Loader } from "@/components/retroui/Loader";
 import { Text } from "@/components/retroui/Text";
 import { useGetProductsByCategoryId } from "@/hooks/admin/useAdmin";
 import { useUpload } from "@/hooks/useDefault";
-import { useCreateProduct } from "@/hooks/useProduct";
+import {
+  useCreateProduct,
+  useDeleteProduct,
+  useUpdateProduct,
+} from "@/hooks/useProduct";
 import React, { useState } from "react";
 import {
   TbArrowBadgeLeftFilled,
@@ -28,7 +32,7 @@ type ProductForm = {
 
 export const CategoryDetail = () => {
   const { categoryId } = useParams();
-  const categoryField = [
+  const productField = [
     {
       name: "categoryId",
       label: "Category Id",
@@ -64,6 +68,11 @@ export const CategoryDetail = () => {
     useGetProductsByCategoryId(categoryId || "undefined");
   const [open, setOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { mutate: deleteProduct, isPending: deletePending } =
+    useDeleteProduct();
+  const { mutate: updateProduct, isPending: updatePending } =
+    useUpdateProduct();
+  const [showEdit, setShowEdit] = useState(false);
 
   const onSubmit = async (data: ProductForm) => {
     let uploadedImages: string[] = [];
@@ -84,6 +93,8 @@ export const CategoryDetail = () => {
     );
   };
 
+  const handleUpdateProduct = async () => {};
+
   return (
     <div className="">
       <div className="flex justify-between">
@@ -95,18 +106,20 @@ export const CategoryDetail = () => {
               &nbsp;Create
             </Button>
           </Dialog.Trigger>
-          <Dialog.Content size={"md"}>
-            <Dialog.Header position={"fixed"}>
-              <Text as="h5">Create a new product</Text>
-            </Dialog.Header>
-            <DynamicForm
-              fields={categoryField}
-              onSubmit={onSubmit}
-              submitLabel="Create"
-              onFileChange={(file) => setImages(file)}
-              defaultValues={{ categoryId: categoryId }}
-            />
-          </Dialog.Content>
+          {open && (
+            <Dialog.Content size={"md"}>
+              <Dialog.Header position={"fixed"}>
+                <Text as="h5">Create a new product</Text>
+              </Dialog.Header>
+              <DynamicForm
+                fields={productField}
+                onSubmit={onSubmit}
+                submitLabel="Create"
+                onFileChange={(file) => setImages(file)}
+                defaultValues={{ categoryId: categoryId }}
+              />
+            </Dialog.Content>
+          )}
         </Dialog>
       </div>
       <div className="">
@@ -177,12 +190,47 @@ export const CategoryDetail = () => {
                     <Card.Description>{p.description}</Card.Description>
                   </Card.Header>
                   <Card.Content className="flex gap-2 flex-none mt-auto">
-                    <Button className="bg-destructive text-white hover:bg-destructive/90">
-                      <PiTrashSimpleFill className="h-4 w-4 mr-2" /> Delete
+                    <Button
+                      className="bg-destructive text-white hover:bg-destructive/90"
+                      onClick={() => deleteProduct(p.id)}
+                    >
+                      {deletePending ? (
+                        <Loader />
+                      ) : (
+                        <>
+                          <PiTrashSimpleFill className="h-4 w-4 mr-2" /> Delete
+                        </>
+                      )}
                     </Button>
-                    <Button className="bg-amber-600 text-white hover:bg-amber-500">
+                    <Button
+                      className="bg-amber-600 text-white hover:bg-amber-500"
+                      onClick={() => 
+                        setShowEdit(true)
+                      }
+                    >
                       <VscEdit className="h-4 w-4 mr-2" /> Edit
                     </Button>
+
+                    <Dialog open={showEdit} onOpenChange={setShowEdit}>
+                        <Dialog.Content size={"md"}>
+                          <Dialog.Header>
+                            <Text as="h5">Edit product</Text>
+                          </Dialog.Header>
+                          <DynamicForm
+                            key={p.id}
+                            fields={productField}
+                            onSubmit={handleUpdateProduct}
+                            submitLabel={updatePending ? "Saving..." : "Save"}
+                            onFileChange={(file) => setImages(file)}
+                            defaultValues={{
+                              categoryId: categoryId,
+                              title: p.title,
+                              description: p.description,
+                              images: p.images?.map((i) => i.url) ?? [],
+                            }}
+                          />
+                        </Dialog.Content>
+                    </Dialog>
                   </Card.Content>
                 </div>
               </Card>

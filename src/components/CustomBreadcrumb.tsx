@@ -12,7 +12,6 @@ export const CustomBreadcrumb = ({ startFrom }: CustomBreadcrumbProps) => {
   const { data: categoryDetail } = useGetCategoryById(
     categoryId || "undefined"
   );
-  console.log("category detail", categoryDetail);
   
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter(Boolean);

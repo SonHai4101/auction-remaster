@@ -84,6 +84,6 @@ export const apiService = {
       }
     ) => axiosInstance.put(`products/${productId}`, body),
     deleteProduct: (productId: string) =>
-      axiosInstance.delete(`products/&${productId}`),
+      axiosInstance.delete(`products/${productId}`),
   },
 };

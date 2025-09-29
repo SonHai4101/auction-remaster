@@ -18,6 +18,25 @@ export const useCreateProduct = () => {
   });
 };
 
+export const useUpdateProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: {
+      productId: string;
+      body: {
+        categoryId: string;
+        title: string;
+        description: string;
+        images?: string[];
+      };
+    }) => apiService.products.updateProduct(params.productId, params.body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [keys.products] });
+      queryClient.invalidateQueries({ queryKey: [keys.categories] });
+    },
+  });
+};
+
 export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
