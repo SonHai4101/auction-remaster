@@ -20,6 +20,7 @@ export const apiService = {
         },
       });
     },
+    delete: (imageId: string) => axiosInstance.delete(`upload/${imageId}`),
   },
   user: {
     getUser: (): Promise<User> => axiosInstance.get("/auth/me"),
@@ -85,5 +86,7 @@ export const apiService = {
     ) => axiosInstance.put(`products/${productId}`, body),
     deleteProduct: (productId: string) =>
       axiosInstance.delete(`products/${productId}`),
+    getProductById: (productId: string): Promise<Product> =>
+      axiosInstance.get(`products/${productId}`).then((res) => res.data),
   },
 };

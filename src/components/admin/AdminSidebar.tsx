@@ -28,11 +28,11 @@ export const AdminSidebar = () => {
     <div>
       <aside
         id="logo-sidebar"
-        className="top-5 left-5 w-64 min-h-[740px] transition-transform -translate-x-full border-r-2  sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+        className="top-5 left-5 w-64 transition-transform -translate-x-full  sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
         aria-label="Sidebar"
       >
         <div className="border-b-2 py-1">
-          <a href="#" className="flex ms-2 md:me-24">
+          <a href="/" className="flex ms-2 md:me-24">
             <img
               src="/icon/logo-md.png"
               className="h-16 me-3"
@@ -54,7 +54,7 @@ export const AdminSidebar = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col min-h-[596px] justify-between">
+        <div className="flex flex-col  justify-between">
           <div className="h-full px-3 py-4 overflow-y-auto dark:bg-gray-800">
             <ul className="space-y-2 font-medium">
               <li>

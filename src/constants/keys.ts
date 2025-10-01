@@ -5,4 +5,5 @@ export const keys = {
   category: "category",
   files: "files",
   products: "products",
+  product: "product",
 };

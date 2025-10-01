@@ -44,8 +44,24 @@ export interface Auction {
   updatedAt: string;
   creator: Creator;
   product: Product;
-  bids: any[];
+  bids: Bid[];
   _count: Count;
+}
+
+export interface Bid {
+  id: string
+  amount: string
+  bidderId: string
+  auctionId: string
+  isAutoBid: boolean
+  maxAmount: string
+  createdAt: string
+  bidder: Bidder
+}
+
+export interface Bidder {
+  id: string
+  username: string
 }
 
 export interface Creator {

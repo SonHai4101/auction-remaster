@@ -1,7 +1,6 @@
 import { DynamicForm } from "@/components/admin/DynamicForm";
 import { CustomBreadcrumb } from "@/components/CustomBreadcrumb";
 import { Button } from "@/components/retroui/Button";
-import { Card } from "@/components/retroui/Card";
 import { Dialog } from "@/components/retroui/Dialog";
 import { Loader } from "@/components/retroui/Loader";
 import { Text } from "@/components/retroui/Text";
@@ -9,19 +8,13 @@ import { useGetProductsByCategoryId } from "@/hooks/admin/useAdmin";
 import { useUpload } from "@/hooks/useDefault";
 import {
   useCreateProduct,
-  useDeleteProduct,
   useUpdateProduct,
 } from "@/hooks/useProduct";
-import React, { useState } from "react";
-import {
-  TbArrowBadgeLeftFilled,
-  TbArrowBadgeRightFilled,
-} from "react-icons/tb";
+import { useState } from "react";
 import { TiPlus } from "react-icons/ti";
 import { useParams } from "react-router";
-import { AnimatePresence, motion } from "motion/react";
-import { PiTrashSimpleFill } from "react-icons/pi";
-import { VscEdit } from "react-icons/vsc";
+import type { Product } from "@/constants/types";
+import { ProductCard } from "./ProductCard";
 
 type ProductForm = {
   categoryId: string;
@@ -56,7 +49,7 @@ export const CategoryDetail = () => {
       name: "images",
       label: "Images",
       type: "file",
-      required: true,
+      required: false,
       multiple: true,
       placeholder: "Add product images",
     },
@@ -67,19 +60,19 @@ export const CategoryDetail = () => {
   const { data: products, isLoading: productsLoading } =
     useGetProductsByCategoryId(categoryId || "undefined");
   const [open, setOpen] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const { mutate: deleteProduct, isPending: deletePending } =
-    useDeleteProduct();
   const { mutate: updateProduct, isPending: updatePending } =
     useUpdateProduct();
-  const [showEdit, setShowEdit] = useState(false);
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
 
   const onSubmit = async (data: ProductForm) => {
+    // upload img
     let uploadedImages: string[] = [];
     if (images.length > 0) {
       const res = await uploadImg({ files: images });
       uploadedImages = res.data;
     }
+
+    // creatProduct
     createProduct(
       {
         ...data,
@@ -87,13 +80,44 @@ export const CategoryDetail = () => {
       },
       {
         onSuccess: () => {
+          setImages([]);
           setOpen(false);
         },
       }
     );
   };
 
-  const handleUpdateProduct = async () => {};
+  const handleUpdateProduct = async (data: ProductForm) => {
+    if (!editProduct) return;
+    let uploadedNewImages: string[] = [];
+    if (images.length > 0) {
+      console.log("images 123", images);
+      
+      const res = await uploadImg({ files: images });
+      uploadedNewImages = res.data;
+    }
+
+    updateProduct(
+      {
+        productId: editProduct.id,
+        body: {
+          categoryId: data.categoryId,
+          title: data.title,
+          description: data.description,
+          images:
+            uploadedNewImages.length > 0
+              ? uploadedNewImages
+              : editProduct.images.map((i) => i.url),
+        },
+      },
+      {
+        onSuccess: () => {
+          setEditProduct(null);
+          setImages([]);
+        },
+      }
+    );
+  };
 
   return (
     <div className="">
@@ -131,115 +155,38 @@ export const CategoryDetail = () => {
             </div>
           ) : products && products.length > 0 ? (
             products.map((p) => (
-              <Card key={p.id}>
-                <div className="flex gap-4 items-center">
-                  <Card.Content className="relative flex-none">
-                    {p.images.length > 0 ? (
-                      <AnimatePresence mode="wait">
-                        <motion.img
-                          key={p.images[currentImageIndex].id}
-                          src={
-                            p.images[currentImageIndex].url ||
-                            "/icon/item-icon.png"
-                          }
-                          alt={`Post image ${currentImageIndex + 1}`}
-                          className="size-48 object-cover border-2"
-                          initial={{ opacity: 0, x: 50 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -100 }}
-                          transition={{ duration: 0.2 }}
-                        />
-                      </AnimatePresence>
-                    ) : (
-                      <img
-                        src="/icon/item-icon.png"
-                        className="size-48 object-cover border-2"
-                        alt="Gameboy"
-                      />
-                    )}
-
-                    {p.images.length > 1 && (
-                      <>
-                        <Button
-                          size="icon"
-                          className="absolute top-1/2 left-1.5 -translate-y-1/2 hover:-translate-y-2"
-                          onClick={() =>
-                            setCurrentImageIndex((prev) =>
-                              prev === 0 ? p.images.length - 1 : prev - 1
-                            )
-                          }
-                        >
-                          <TbArrowBadgeLeftFilled className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          className="absolute top-1/2 right-1.5 -translate-y-1/2 hover:-translate-y-2"
-                          onClick={() =>
-                            setCurrentImageIndex((prev) =>
-                              prev === p.images.length - 1 ? 0 : prev + 1
-                            )
-                          }
-                        >
-                          <TbArrowBadgeRightFilled className="w-4 h-4" />
-                        </Button>
-                      </>
-                    )}
-                  </Card.Content>
-                  <Card.Header className="grow">
-                    <Card.Title>{p.title}</Card.Title>
-                    <Card.Description>{p.description}</Card.Description>
-                  </Card.Header>
-                  <Card.Content className="flex gap-2 flex-none mt-auto">
-                    <Button
-                      className="bg-destructive text-white hover:bg-destructive/90"
-                      onClick={() => deleteProduct(p.id)}
-                    >
-                      {deletePending ? (
-                        <Loader />
-                      ) : (
-                        <>
-                          <PiTrashSimpleFill className="h-4 w-4 mr-2" /> Delete
-                        </>
-                      )}
-                    </Button>
-                    <Button
-                      className="bg-amber-600 text-white hover:bg-amber-500"
-                      onClick={() => 
-                        setShowEdit(true)
-                      }
-                    >
-                      <VscEdit className="h-4 w-4 mr-2" /> Edit
-                    </Button>
-
-                    <Dialog open={showEdit} onOpenChange={setShowEdit}>
-                        <Dialog.Content size={"md"}>
-                          <Dialog.Header>
-                            <Text as="h5">Edit product</Text>
-                          </Dialog.Header>
-                          <DynamicForm
-                            key={p.id}
-                            fields={productField}
-                            onSubmit={handleUpdateProduct}
-                            submitLabel={updatePending ? "Saving..." : "Save"}
-                            onFileChange={(file) => setImages(file)}
-                            defaultValues={{
-                              categoryId: categoryId,
-                              title: p.title,
-                              description: p.description,
-                              images: p.images?.map((i) => i.url) ?? [],
-                            }}
-                          />
-                        </Dialog.Content>
-                    </Dialog>
-                  </Card.Content>
-                </div>
-              </Card>
+              <ProductCard key={p.id} product={p} onEdit={setEditProduct} />
             ))
           ) : (
             <div className="h-[150px] grid place-content-center">
               <Text as="h4">No product found :'(</Text>
             </div>
           )}
+          <Dialog
+            open={!!editProduct}
+            onOpenChange={(i) => !i && setEditProduct(null)}
+          >
+            <Dialog.Content size={"md"}>
+              <Dialog.Header>
+                <Text as="h5">Edit product</Text>
+              </Dialog.Header>
+              {editProduct && (
+                <DynamicForm
+                  key={editProduct.id}
+                  fields={productField}
+                  onSubmit={handleUpdateProduct}
+                  submitLabel={updatePending ? "Saving..." : "Save"}
+                  onFileChange={(file) => setImages(file)}
+                  defaultValues={{
+                    categoryId: categoryId,
+                    title: editProduct.title,
+                    description: editProduct.description,
+                    images: editProduct.images?.map((i) => i.url) ?? [],
+                  }}
+                />
+              )}
+            </Dialog.Content>
+          </Dialog>
         </div>
       </div>
     </div>

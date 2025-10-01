@@ -1,6 +1,6 @@
 import { keys } from "@/constants/keys";
 import { apiService } from "@/services/apiService";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateProduct = () => {
   const queryClient = useQueryClient();
@@ -48,3 +48,10 @@ export const useDeleteProduct = () => {
     },
   });
 };
+
+export const useGetProductById = (productId: string) => {
+  return useQuery({
+    queryKey: [keys.products],
+    queryFn: () => apiService.products.getProductById(productId)
+  })
+}

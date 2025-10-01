@@ -4,6 +4,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Label } from "../retroui/Label";
+import { Text } from "../retroui/Text";
 
 type Field = {
   name: string;
@@ -105,13 +106,13 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                   )}
                 </div>
                 {existingImages.length > 0 && (
-                  <div>
+                  <div className="mt-3 flex gap-2">
                     {existingImages.map((url, index) => (
                       <div key={index} className="relative">
                         <img
                           src={url}
                           alt={`Existing ${index + 1}`}
-                          className="size-10 object-cover rounded-xl"
+                          className="size-20 object-cover border-2 rounded-xl"
                         />
                         <button
                           onClick={() => removeExistingImage(index)}
@@ -124,23 +125,26 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                   </div>
                 )}
                 {images.length > 0 && (
-                  <div className="mt-3 flex gap-2">
-                    {images.map((img, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={URL.createObjectURL(img)}
-                          alt={`Selected ${index + 1}`}
-                          className="size-10 object-cover rounded-xl"
-                        />
-                        <button
-                          onClick={() => removeImage(index)}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full size-5 items-center justify-center flex"
-                        >
-                          x
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                  <>
+                    <Text>Upload Images</Text>
+                    <div className="flex gap-2">
+                      {images.map((img, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={URL.createObjectURL(img)}
+                            alt={`Selected ${index + 1}`}
+                            className="size-20 object-cover border-2 rounded-xl"
+                          />
+                          <button
+                            onClick={() => removeImage(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full size-5 items-center justify-center flex"
+                          >
+                            x
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </>
                 )}
               </>
             );

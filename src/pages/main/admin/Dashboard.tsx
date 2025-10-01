@@ -1,14 +1,14 @@
 import { Button } from "@/components/retroui/Button";
-import { Card } from "@/components/retroui/Card";
 import { Dialog } from "@/components/retroui/Dialog";
 import { Text } from "@/components/retroui/Text";
 import { useCreateAuction } from "@/hooks/admin/useAdmin";
 import { TiPlus } from "react-icons/ti";
-import { formatNumber, toIOSTime } from "@/utils/ConvertUnit";
+import { toIOSTime } from "@/utils/ConvertUnit";
 import { useGetAllAuctions } from "@/hooks/useAuction";
 import { DynamicForm } from "@/components/admin/DynamicForm";
 import { useState } from "react";
 import { Loader } from "@/components/retroui/Loader";
+import { AuctionCard } from "@/components/AuctionCard";
 
 type AuctionForm = {
   title: string;
@@ -59,7 +59,10 @@ export const Dashboard = () => {
       placeholder: "Type product Id",
     },
   ];
-  const { data: allAuctions, isLoading } = useGetAllAuctions({ page: 1, limit: 9999 });
+  const { data: allAuctions, isLoading } = useGetAllAuctions({
+    page: 1,
+    limit: 9999,
+  });
   const { mutate: createAuction } = useCreateAuction();
   const [open, setOpen] = useState(false);
 
@@ -74,9 +77,9 @@ export const Dashboard = () => {
         startTime: toIOSTime(data.startTime),
         endTime: toIOSTime(data.endTime),
       },
-        {
+      {
         onSuccess: () => {
-          setOpen(false)
+          setOpen(false);
         },
       }
     );
@@ -106,55 +109,17 @@ export const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-4 gap-4 mt-5 p-5 border-4 border-double">
-        {isLoading && (
+        {isLoading ? (
           <Loader />
-        )}
-        {allAuctions &&
+        ) : allAuctions && allAuctions.data.length > 0 ? (
           allAuctions?.data?.map((item) => (
-            <Card
-              className="max-w-[350px] shadow-none hover:shadow-none"
-              key={item.id}
-            >
-              <Card.Content className="pb-0">
-                <img
-                  src="/icon/item-icon.png"
-                  className="w-full h-full"
-                  alt="Gameboy"
-                />
-              </Card.Content>
-              <Card.Header className="pb-0">
-                <Card.Title>{item.product.title}</Card.Title>
-              </Card.Header>
-              <Card.Content className="flex flex-col gap-3 pt-0">
-                <p className="text-lg font-semibold">{item.description}</p>
-
-                <div className="flex flex-col">
-                  <div className="flex justify-between">
-                    <p className="text-lg font-semibold">Current:</p>
-                    <p className="text-lg font-semibold">
-                      ${" "}
-                      {item.bids && item.bids?.[0]?.bids
-                        ? formatNumber(item.bids?.[0]?.bids)
-                        : formatNumber(Number(item.startPrice))}
-                    </p>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <p className="text-lg font-semibold">Buy now:</p>
-                    <p className="text-lg font-semibold">
-                      $ {formatNumber(Number(item.buyNowPrice))}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center">
-                  <p>
-                    Status: <span className="text-red-500"> {item.status}</span>
-                  </p>
-                  <Button className="w-fit">Bid</Button>
-                </div>
-              </Card.Content>
-            </Card>
-          ))}
+            <AuctionCard key={item.id} auction={item} />
+          ))
+        ) : (
+          <div className="h-[150px] grid place-content-center">
+            <Text as="h4">No auction found :'(</Text>
+          </div>
+        )}
       </div>
     </div>
   );

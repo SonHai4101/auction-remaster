@@ -13,3 +13,14 @@ export const useUpload = () => {
     },
   });
 };
+
+export const useDelete = (imageId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => apiService.default.delete(imageId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [keys.files]})
+      queryClient.invalidateQueries({ queryKey: [keys.products]})
+    }
+  })
+}
