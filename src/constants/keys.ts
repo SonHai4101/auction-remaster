@@ -6,4 +6,5 @@ export const keys = {
   files: "files",
   products: "products",
   product: "product",
+  users: "users",
 };

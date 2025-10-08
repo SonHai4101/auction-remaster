@@ -52,3 +52,10 @@ export const useCreateCategory = () => {
     },
   });
 };
+
+export const useGetUsers = () => {
+  return useQuery({
+    queryKey: [keys.users],
+    queryFn: () => apiService.admin.getUsers(),
+  });
+};
