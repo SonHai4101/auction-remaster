@@ -1,5 +1,5 @@
 import { getTimeRemaining } from "@/utils/GetTime";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface CountDownTimerProps {
   endTime: string;

@@ -4,7 +4,7 @@ import { Loader } from "@/components/retroui/Loader";
 import type { Product } from "@/constants/types";
 import { useDeleteProduct } from "@/hooks/useProduct";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PiTrashSimpleFill } from "react-icons/pi";
 import {
   TbArrowBadgeLeftFilled,
@@ -17,13 +17,24 @@ interface ProductCardProps {
   onEdit: (product: Product) => void;
 }
 
-export const ProductCard = ({
-  product,
-  onEdit,
-}: ProductCardProps) => {
+export const ProductCard = ({ product, onEdit }: ProductCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { mutate: deleteProduct, isPending: deletePending } =
     useDeleteProduct();
+
+  const images = product?.images || [];
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) =>
+        prev === images.length - 1 ? 0 : prev + 1
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [images.length]);
+  
   return (
     <Card key={product.id}>
       <div className="flex gap-4 items-center">
@@ -89,7 +100,9 @@ export const ProductCard = ({
             onClick={() => deleteProduct(product.id)}
           >
             {deletePending ? (
-              <Loader />
+              <div className="h-[150px] grid place-content-center">
+                <Loader />
+              </div>
             ) : (
               <>
                 <PiTrashSimpleFill className="h-4 w-4 mr-2" /> Delete

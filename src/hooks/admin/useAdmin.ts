@@ -1,7 +1,6 @@
 import { keys } from "@/constants/keys";
 import { apiService } from "@/services/apiService";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { use } from "react";
 
 export const useCreateAuction = () => {
   const queryClient = useQueryClient();
@@ -15,6 +14,38 @@ export const useCreateAuction = () => {
       endTime: string;
       productId: string;
     }) => apiService.admin.createAuction({ ...body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [keys.auctions] });
+    },
+  });
+};
+
+export const useUpdateAuction = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: {
+      auctionId: string;
+      body: {
+        title: string;
+        description: string;
+        startPrice: number;
+        buyNowPrice: number;
+        startTime: string;
+        endTime: string;
+        productId: string;
+      };
+    }) => apiService.admin.updateAuction(params.auctionId, params.body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [keys.auctions] });
+    },
+  });
+};
+
+export const useDeleteAuction = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (auctionId: string) =>
+      apiService.admin.deleteAuction(auctionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [keys.auctions] });
     },

@@ -131,7 +131,7 @@ export const Dashboard = () => {
               >
                 Ongoing auction
               </Text>
-              <div className="grid grid-cols-4 gap-4 mt-2 ">
+              <div className="grid grid-cols-3 gap-4 mt-2 ">
                 {isLoading ? (
                   <div className="grid place-content-center">
                     <Loader />
@@ -153,7 +153,7 @@ export const Dashboard = () => {
               <Text as="h3" className="text-red-600">
                 Ended auction
               </Text>
-              <div className="grid grid-cols-4 gap-4 mt-2 ">
+              <div className="grid grid-cols-3 gap-4 mt-2 ">
                 {isLoading ? (
                   <div className="grid place-content-center">
                     <Loader />
@@ -175,7 +175,7 @@ export const Dashboard = () => {
               <Text as="h3" className="text-gray-600">
                 Pending Auction
               </Text>
-              <div className="grid grid-cols-4 gap-4 mt-2 ">
+              <div className="grid grid-cols-3 gap-4 mt-2 ">
                 {isLoading ? (
                   <div className="grid place-content-center">
                     <Loader />
@@ -197,7 +197,7 @@ export const Dashboard = () => {
               <Text as="h3" className="text-yellow-500">
                 Cancelled Auction
               </Text>
-              <div className="grid grid-cols-4 gap-4 mt-2 ">
+              <div className="grid grid-cols-3 gap-4 mt-2 ">
                 {isLoading ? (
                   <div className="grid place-content-center">
                     <Loader />

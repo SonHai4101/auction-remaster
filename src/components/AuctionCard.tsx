@@ -2,21 +2,39 @@ import { Card } from "./retroui/Card";
 import { formatNumber } from "@/utils/ConvertUnit";
 import { Button } from "./retroui/Button";
 import type { Auction } from "@/constants/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   TbArrowBadgeLeftFilled,
   TbArrowBadgeRightFilled,
 } from "react-icons/tb";
 import { CountDownTimer } from "./CountDownTimer";
+import { VscEdit } from "react-icons/vsc";
+import { Loader } from "./retroui/Loader";
+import { PiTrashSimpleFill } from "react-icons/pi";
+import { useDeleteAuction } from "@/hooks/admin/useAdmin";
 
 interface AuctionCardProps {
   auction: Auction;
 }
 
 export const AuctionCard = ({ auction }: AuctionCardProps) => {
-  const [timeLeft, setTimeLeft] = useState()
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { mutate: deleteAuction, isPending: deletePending } =
+    useDeleteAuction();
+  const images = auction.product?.images || [];
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) =>
+        prev === images.length - 1 ? 0 : prev + 1
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [images.length]);
+
   return (
     <Card className="max-w-[350px] shadow-none hover:shadow-none">
       <Card.Content className="relative pb-0">
@@ -29,7 +47,7 @@ export const AuctionCard = ({ auction }: AuctionCardProps) => {
                 "/icon/item-icon.png"
               }
               alt={`Post image ${currentImageIndex + 1}`}
-              className="size-60 object-cover border-2"
+              className="w-[304px] h-[304px] object-cover border-2"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -100 }}
@@ -39,11 +57,10 @@ export const AuctionCard = ({ auction }: AuctionCardProps) => {
         ) : (
           <img
             src="/icon/item-icon.png"
-            className="size-52 object-cover border-2"
+            className="w-[304px] h-[304px] object-cover border-2"
             alt="Gameboy"
           />
         )}
-
         {auction.product?.images?.length > 1 && (
           <>
             <Button
@@ -74,7 +91,7 @@ export const AuctionCard = ({ auction }: AuctionCardProps) => {
       <Card.Header className="pb-0">
         <Card.Title>{auction.product.title}</Card.Title>
       </Card.Header>
-      <Card.Content className="flex flex-col gap-3 pt-0 justify-between">
+      <Card.Content className="flex flex-col gap-3 py-0 justify-between">
         <p className="text-lg font-semibold">{auction.description}</p>
         <div className="flex flex-col">
           <div className="flex justify-between">
@@ -99,9 +116,7 @@ export const AuctionCard = ({ auction }: AuctionCardProps) => {
         {auction.status === "ENDED" && (
           <div className="flex justify-between">
             <p className="text-lg font-semibold">Winner:</p>
-            <p className="text-lg font-semibold">
-              {auction.winner ?? "None"}
-            </p>
+            <p className="text-lg font-semibold">{auction.winner ?? "None"}</p>
           </div>
         )}
         {auction.status === "ACTIVE" && (
@@ -128,6 +143,28 @@ export const AuctionCard = ({ auction }: AuctionCardProps) => {
             <Button className="w-fit">Bid</Button>
           )}
         </div>
+      </Card.Content>
+      <Card.Content className="flex gap-2 flex-none justify-end">
+        <Button
+          className="bg-destructive text-white hover:bg-destructive/90"
+          onClick={() => deleteAuction(auction.id)}
+        >
+          {deletePending ? (
+            <div className="h-[150px] grid place-content-center">
+              <Loader />
+            </div>
+          ) : (
+            <>
+              <PiTrashSimpleFill className="h-4 w-4 mr-2" /> Delete
+            </>
+          )}
+        </Button>
+        <Button
+          className="bg-amber-600 text-white hover:bg-amber-500"
+          // onClick={() => onEdit(product)}
+        >
+          <VscEdit className="h-4 w-4 mr-2" /> Edit
+        </Button>
       </Card.Content>
     </Card>
   );

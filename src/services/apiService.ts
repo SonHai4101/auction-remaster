@@ -39,6 +39,19 @@ export const apiService = {
       endTime: string;
       productId: string;
     }) => axiosInstance.post("auctions/", body),
+    updateAuction: (
+      id: string,
+      body: {
+        title: string;
+        description: string;
+        startPrice: number;
+        buyNowPrice: number;
+        startTime: string;
+        endTime: string;
+        productId: string;
+      }
+    ) => axiosInstance.put(`auctions/${id}`, body),
+    deleteAuction: (id: string) => axiosInstance.delete(`auctions/${id}`),
     createCategory: (body: { name: string; description: string }) =>
       axiosInstance.post("category/", body),
     getAllCategories: (): Promise<Category[]> =>
