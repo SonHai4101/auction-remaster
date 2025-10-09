@@ -16,9 +16,10 @@ import { useDeleteAuction } from "@/hooks/admin/useAdmin";
 
 interface AuctionCardProps {
   auction: Auction;
+  onEdit: (auction: Auction) => void;
 }
 
-export const AuctionCard = ({ auction }: AuctionCardProps) => {
+export const AuctionCard = ({ auction, onEdit }: AuctionCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { mutate: deleteAuction, isPending: deletePending } =
     useDeleteAuction();
@@ -161,7 +162,7 @@ export const AuctionCard = ({ auction }: AuctionCardProps) => {
         </Button>
         <Button
           className="bg-amber-600 text-white hover:bg-amber-500"
-          // onClick={() => onEdit(product)}
+          onClick={() => onEdit(auction)}
         >
           <VscEdit className="h-4 w-4 mr-2" /> Edit
         </Button>

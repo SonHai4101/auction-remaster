@@ -1,7 +1,7 @@
 import { Button } from "@/components/retroui/Button";
 import { Dialog } from "@/components/retroui/Dialog";
 import { Text } from "@/components/retroui/Text";
-import { useCreateAuction } from "@/hooks/admin/useAdmin";
+import { useCreateAuction, useUpdateAuction } from "@/hooks/admin/useAdmin";
 import { TiPlus } from "react-icons/ti";
 import { toIOSTime } from "@/utils/ConvertUnit";
 import { useGetAllAuctions } from "@/hooks/useAuction";
@@ -16,6 +16,7 @@ import {
   TabsTrigger,
   TabsTriggerList,
 } from "@/components/retroui/Tab";
+import type { Auction } from "@/constants/types";
 
 type AuctionForm = {
   title: string;
@@ -72,8 +73,9 @@ export const Dashboard = () => {
   });
   const { mutate: createAuction } = useCreateAuction();
   const [open, setOpen] = useState(false);
-
-  console.log("all auction", allAuctions);
+  const { mutate: updateAuction, isPending: updatePending } =
+    useUpdateAuction();
+  const [editAuction, setEditAuction] = useState<Auction | null>(null);
 
   const onSubmit = (data: AuctionForm) => {
     createAuction(
@@ -91,6 +93,30 @@ export const Dashboard = () => {
       }
     );
   };
+
+  const handleUpdateAuction = async (data: AuctionForm) => {
+    if (!editAuction) return;
+    updateAuction(
+      {
+        auctionId: editAuction.id,
+        body: {
+          title: data.title,
+          description: data.description,
+          startPrice: Number(data.startPrice),
+          buyNowPrice: Number(data.buyNowPrice),
+          startTime: toIOSTime(data.startTime),
+          endTime: toIOSTime(data.endTime),
+          productId: data.productId,
+        },
+      },
+      {
+        onSuccess: () => {
+          setEditAuction(null);
+        },
+      }
+    );
+  };
+
   return (
     <div>
       <div className="flex justify-between">
@@ -141,7 +167,13 @@ export const Dashboard = () => {
                     .length > 0 ? (
                   allAuctions?.data
                     ?.filter((item) => item.status === "ACTIVE")
-                    .map((item) => <AuctionCard key={item.id} auction={item} />)
+                    .map((item) => (
+                      <AuctionCard
+                        key={item.id}
+                        auction={item}
+                        onEdit={setEditAuction}
+                      />
+                    ))
                 ) : (
                   <div className="h-[150px] grid place-content-center">
                     <Text as="h4">No auction found :'(</Text>
@@ -163,7 +195,13 @@ export const Dashboard = () => {
                     .length > 0 ? (
                   allAuctions?.data
                     ?.filter((item) => item.status === "ENDED")
-                    .map((item) => <AuctionCard key={item.id} auction={item} />)
+                    .map((item) => (
+                      <AuctionCard
+                        key={item.id}
+                        auction={item}
+                        onEdit={setEditAuction}
+                      />
+                    ))
                 ) : (
                   <div className="h-[150px] grid place-content-center">
                     <Text as="h4">No auction found :'(</Text>
@@ -185,7 +223,13 @@ export const Dashboard = () => {
                     .length > 0 ? (
                   allAuctions?.data
                     ?.filter((item) => item.status === "DRAFT")
-                    .map((item) => <AuctionCard key={item.id} auction={item} />)
+                    .map((item) => (
+                      <AuctionCard
+                        key={item.id}
+                        auction={item}
+                        onEdit={setEditAuction}
+                      />
+                    ))
                 ) : (
                   <div className="h-[150px] grid col-span-full place-content-center">
                     <Text as="h4">No auction found :'(</Text>
@@ -207,7 +251,13 @@ export const Dashboard = () => {
                     .length > 0 ? (
                   allAuctions?.data
                     ?.filter((item) => item.status === "CANCELLED")
-                    .map((item) => <AuctionCard key={item.id} auction={item} />)
+                    .map((item) => (
+                      <AuctionCard
+                        key={item.id}
+                        auction={item}
+                        onEdit={setEditAuction}
+                      />
+                    ))
                 ) : (
                   <div className="h-[150px] grid col-span-full place-content-center">
                     <Text as="h4">No auction found :'(</Text>
@@ -217,6 +267,33 @@ export const Dashboard = () => {
             </TabsContent>
           </TabsPanels>
         </Tabs>
+        <Dialog
+          open={!!editAuction}
+          onOpenChange={(i) => !i && setEditAuction(null)}
+        >
+          <Dialog.Content size={"md"}>
+            <Dialog.Header>
+              <Text as="h5">Edit product</Text>
+            </Dialog.Header>
+            {editAuction && (
+              <DynamicForm
+                key={editAuction.id}
+                fields={auctionFields}
+                onSubmit={handleUpdateAuction}
+                submitLabel={updatePending ? "Saving..." : "Save"}
+                defaultValues={{
+                  title: editAuction.title,
+                  description: editAuction.description,
+                  startPrice: editAuction.startPrice,
+                  buyNowPrice: editAuction.buyNowPrice,
+                  startTime: editAuction.startTime,
+                  endTime: editAuction.endTime,
+                  productId: editAuction.productId,
+                }}
+              />
+            )}
+          </Dialog.Content>
+        </Dialog>
       </div>
     </div>
   );
