@@ -8,12 +8,14 @@ import {
   TbArrowBadgeLeftFilled,
   TbArrowBadgeRightFilled,
 } from "react-icons/tb";
+import { CountDownTimer } from "./CountDownTimer";
 
 interface AuctionCardProps {
   auction: Auction;
 }
 
 export const AuctionCard = ({ auction }: AuctionCardProps) => {
+  const [timeLeft, setTimeLeft] = useState()
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   return (
     <Card className="max-w-[350px] shadow-none hover:shadow-none">
@@ -74,7 +76,6 @@ export const AuctionCard = ({ auction }: AuctionCardProps) => {
       </Card.Header>
       <Card.Content className="flex flex-col gap-3 pt-0 justify-between">
         <p className="text-lg font-semibold">{auction.description}</p>
-
         <div className="flex flex-col">
           <div className="flex justify-between">
             <p className="text-lg font-semibold">Current:</p>
@@ -95,6 +96,22 @@ export const AuctionCard = ({ auction }: AuctionCardProps) => {
             </p>
           </div>
         </div>
+        {auction.status === "ENDED" && (
+          <div className="flex justify-between">
+            <p className="text-lg font-semibold">Winner:</p>
+            <p className="text-lg font-semibold">
+              {auction.winner ?? "None"}
+            </p>
+          </div>
+        )}
+        {auction.status === "ACTIVE" && (
+          <div className="flex justify-between">
+            <p className="text-lg font-semibold">Time left:</p>
+            <p className="text-lg font-semibold text-red-500">
+              <CountDownTimer endTime={auction.endTime} />
+            </p>
+          </div>
+        )}
         <div className="flex justify-between items-center mb-auto">
           <p>
             Status:{" "}
@@ -107,7 +124,9 @@ export const AuctionCard = ({ auction }: AuctionCardProps) => {
               {auction.status}
             </span>
           </p>
-          <Button className="w-fit">Bid</Button>
+          {auction.status === "ACTIVE" && (
+            <Button className="w-fit">Bid</Button>
+          )}
         </div>
       </Card.Content>
     </Card>

@@ -43,6 +43,7 @@ export interface Auction {
   winnerId: any;
   createdAt: string;
   updatedAt: string;
+  winner: string;
   creator: Creator;
   product: Product;
   bids: Bid[];

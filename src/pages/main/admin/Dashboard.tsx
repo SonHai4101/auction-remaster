@@ -9,6 +9,13 @@ import { DynamicForm } from "@/components/admin/DynamicForm";
 import { useState } from "react";
 import { Loader } from "@/components/retroui/Loader";
 import { AuctionCard } from "@/components/AuctionCard";
+import {
+  Tabs,
+  TabsContent,
+  TabsPanels,
+  TabsTrigger,
+  TabsTriggerList,
+} from "@/components/retroui/Tab";
 
 type AuctionForm = {
   title: string;
@@ -108,18 +115,108 @@ export const Dashboard = () => {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mt-5 p-5 border-4 border-double">
-        {isLoading ? (
-          <Loader />
-        ) : allAuctions && allAuctions.data.length > 0 ? (
-          allAuctions?.data?.map((item) => (
-            <AuctionCard key={item.id} auction={item} />
-          ))
-        ) : (
-          <div className="h-[150px] grid place-content-center">
-            <Text as="h4">No auction found :'(</Text>
-          </div>
-        )}
+      <div className=" mt-5 p-5 border-4 border-double">
+        <Tabs>
+          <TabsTriggerList>
+            <TabsTrigger>Ongoing</TabsTrigger>
+            <TabsTrigger>End</TabsTrigger>
+            <TabsTrigger>Draft</TabsTrigger>
+            <TabsTrigger>Cancel</TabsTrigger>
+          </TabsTriggerList>
+          <TabsPanels>
+            <TabsContent>
+              <Text
+                as="h3"
+                className="text-green-500 animate-pulse animation-duration-[0.5s]"
+              >
+                Ongoing auction
+              </Text>
+              <div className="grid grid-cols-4 gap-4 mt-2 ">
+                {isLoading ? (
+                  <div className="grid place-content-center">
+                    <Loader />
+                  </div>
+                ) : allAuctions &&
+                  allAuctions.data.filter((item) => item.status === "ACTIVE")
+                    .length > 0 ? (
+                  allAuctions?.data
+                    ?.filter((item) => item.status === "ACTIVE")
+                    .map((item) => <AuctionCard key={item.id} auction={item} />)
+                ) : (
+                  <div className="h-[150px] grid place-content-center">
+                    <Text as="h4">No auction found :'(</Text>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+            <TabsContent>
+              <Text as="h3" className="text-red-600">
+                Ended auction
+              </Text>
+              <div className="grid grid-cols-4 gap-4 mt-2 ">
+                {isLoading ? (
+                  <div className="grid place-content-center">
+                    <Loader />
+                  </div>
+                ) : allAuctions &&
+                  allAuctions.data.filter((item) => item.status === "ENDED")
+                    .length > 0 ? (
+                  allAuctions?.data
+                    ?.filter((item) => item.status === "ENDED")
+                    .map((item) => <AuctionCard key={item.id} auction={item} />)
+                ) : (
+                  <div className="h-[150px] grid place-content-center">
+                    <Text as="h4">No auction found :'(</Text>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+            <TabsContent>
+              <Text as="h3" className="text-gray-600">
+                Pending Auction
+              </Text>
+              <div className="grid grid-cols-4 gap-4 mt-2 ">
+                {isLoading ? (
+                  <div className="grid place-content-center">
+                    <Loader />
+                  </div>
+                ) : allAuctions &&
+                  allAuctions.data.filter((item) => item.status === "DRAFT")
+                    .length > 0 ? (
+                  allAuctions?.data
+                    ?.filter((item) => item.status === "DRAFT")
+                    .map((item) => <AuctionCard key={item.id} auction={item} />)
+                ) : (
+                  <div className="h-[150px] grid col-span-full place-content-center">
+                    <Text as="h4">No auction found :'(</Text>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+            <TabsContent>
+              <Text as="h3" className="text-yellow-500">
+                Cancelled Auction
+              </Text>
+              <div className="grid grid-cols-4 gap-4 mt-2 ">
+                {isLoading ? (
+                  <div className="grid place-content-center">
+                    <Loader />
+                  </div>
+                ) : allAuctions &&
+                  allAuctions.data.filter((item) => item.status === "CANCELLED")
+                    .length > 0 ? (
+                  allAuctions?.data
+                    ?.filter((item) => item.status === "CANCELLED")
+                    .map((item) => <AuctionCard key={item.id} auction={item} />)
+                ) : (
+                  <div className="h-[150px] grid col-span-full place-content-center">
+                    <Text as="h4">No auction found :'(</Text>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </TabsPanels>
+        </Tabs>
       </div>
     </div>
   );
