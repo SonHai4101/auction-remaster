@@ -1,43 +1,18 @@
+import { AuctionCard } from "@/components/AuctionCard";
 import { Button } from "@/components/retroui/Button";
-import { Card } from "@/components/retroui/Card";
+import { Loader } from "@/components/retroui/Loader";
 import { Text } from "@/components/retroui/Text";
+import { useGetAllAuctions } from "@/hooks/useAuction";
+import { useRandomAuction } from "@/hooks/useRandomAuction";
 import { FaArrowTrendUp } from "react-icons/fa6";
 
 export const index = () => {
-  const autionCard = [
-    {
-      id: 1,
-      img: "/icon/item-icon.png",
-      name: "Vintage Ferrari Model",
-      description: "Rare 1:18 scale Ferrari collection from the 1960s",
-      currentBid: "$850",
-      bidder: "12 bidders",
-    },
-    {
-      id: 2,
-      img: "/icon/item-icon.png",
-      name: "Vintage Ferrari Model",
-      description: "Rare 1:18 scale Ferrari collection from the 1960s",
-      currentBid: "$850",
-      bidder: "12 bidders",
-    },
-    {
-      id: 3,
-      img: "/icon/item-icon.png",
-      name: "Vintage Ferrari Model",
-      description: "Rare 1:18 scale Ferrari collection from the 1960s",
-      currentBid: "$850",
-      bidder: "12 bidders",
-    },
-    {
-      id: 4,
-      img: "/icon/item-icon.png",
-      name: "Vintage Ferrari Model",
-      description: "Rare 1:18 scale Ferrari collection from the 1960s",
-      currentBid: "$850",
-      bidder: "12 bidders",
-    },
-  ];
+  const { data: allAuctions, isLoading: loadingAuctions } = useGetAllAuctions({
+    page: 1,
+    limit: 9999,
+  });
+  const randomAuction = useRandomAuction(allAuctions?.data ?? undefined);
+
   return (
     <>
       <div className="w-full items-center mt-10">
@@ -90,22 +65,17 @@ export const index = () => {
           </div>
 
           <div className="flex-1 text-center">
-            <Card className="w-[450px] shadow-none hover:shadow-none">
-              <Card.Content className="pb-0">
-                <img
-                  src="/icon/item-icon.png"
-                  className="w-full h-full"
-                  alt="Gameboy"
-                />
-              </Card.Content>
-              <Card.Header className="pb-0 text-start">
-                <Card.Title>Classic 8-bit Gameboy</Card.Title>
-              </Card.Header>
-              <Card.Content className="flex justify-between items-center">
-                <p className="text-lg font-semibold">$29.90</p>
-                <Button>Place Bid</Button>
-              </Card.Content>
-            </Card>
+            {loadingAuctions ? (
+              <div className="grid place-content-center">
+                <Loader />
+              </div>
+            ) : randomAuction ? (
+              <AuctionCard auction={randomAuction} type="user" />
+            ) : (
+              <div className="h-[150px] grid place-content-center">
+                <Text as="h4">No auctions at the moment :'(</Text>
+              </div>
+            )}
           </div>
         </div>
 
@@ -118,24 +88,28 @@ export const index = () => {
             </Text>
           </div>
           <div className="grid grid-cols-4 gap-4">
-            {autionCard.map((item) => (
-              <Card className="max-w-[350px] shadow-none hover:shadow-none">
-                <Card.Content className="pb-0">
-                  <img src={item.img} className="w-full h-full" alt="Gameboy" />
-                </Card.Content>
-                <Card.Header className="pb-0">
-                  <Card.Title>{item.name}</Card.Title>
-                </Card.Header>
-                <Card.Content className="flex flex-col gap-3 items-center pt-0">
-                  <p className="text-lg font-semibold">{item.description}</p>
-
-                  <div className="flex justify-between items-center w-full">
-                    <p className="text-lg font-semibold">{item.currentBid}</p>
-                    <Button>Add to cart</Button>
-                  </div>
-                </Card.Content>
-              </Card>
-            ))}
+            {loadingAuctions ? (
+              <div className="grid place-content-center">
+                <Loader />
+              </div>
+            ) : allAuctions &&
+              allAuctions.data.filter((item) => item.status === "ACTIVE")
+                .length > 0 ? (
+              allAuctions?.data
+                ?.filter((item) => item.status === "ACTIVE")
+                .map((item) => (
+                  <AuctionCard
+                    key={item.id}
+                    auction={item}
+                    type="user"
+                    // onEdit={setEditAuction}
+                  />
+                ))
+            ) : (
+              <div className="h-[150px] grid place-content-center">
+                <Text as="h4">No auctions at the moment :'(</Text>
+              </div>
+            )}
           </div>
         </div>
         <div className="grid place-content-center my-10">

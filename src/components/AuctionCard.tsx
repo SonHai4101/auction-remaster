@@ -16,10 +16,15 @@ import { useDeleteAuction } from "@/hooks/admin/useAdmin";
 
 interface AuctionCardProps {
   auction: Auction;
-  onEdit: (auction: Auction) => void;
+  onEdit?: (auction: Auction) => void;
+  type?: "admin" | "user";
 }
 
-export const AuctionCard = ({ auction, onEdit }: AuctionCardProps) => {
+export const AuctionCard = ({
+  auction,
+  onEdit,
+  type = "admin",
+}: AuctionCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { mutate: deleteAuction, isPending: deletePending } =
     useDeleteAuction();
@@ -92,7 +97,11 @@ export const AuctionCard = ({ auction, onEdit }: AuctionCardProps) => {
       <Card.Header className="pb-0">
         <Card.Title>{auction.product.title}</Card.Title>
       </Card.Header>
-      <Card.Content className="flex flex-col gap-3 py-0 justify-between">
+      <Card.Content
+        className={`flex flex-col gap-3 justify-between ${
+          type === "admin" ? "py-0" : ""
+        }`}
+      >
         <p className="text-lg font-semibold">{auction.description}</p>
         <div className="flex flex-col">
           <div className="flex justify-between">
@@ -145,28 +154,30 @@ export const AuctionCard = ({ auction, onEdit }: AuctionCardProps) => {
           )}
         </div>
       </Card.Content>
-      <Card.Content className="flex gap-2 flex-none justify-end">
-        <Button
-          className="bg-destructive text-white hover:bg-destructive/90"
-          onClick={() => deleteAuction(auction.id)}
-        >
-          {deletePending ? (
-            <div className="h-[150px] grid place-content-center">
-              <Loader />
-            </div>
-          ) : (
-            <>
-              <PiTrashSimpleFill className="h-4 w-4 mr-2" /> Delete
-            </>
-          )}
-        </Button>
-        <Button
-          className="bg-amber-600 text-white hover:bg-amber-500"
-          onClick={() => onEdit(auction)}
-        >
-          <VscEdit className="h-4 w-4 mr-2" /> Edit
-        </Button>
-      </Card.Content>
+      {type === "admin" && (
+        <Card.Content className="flex gap-2 flex-none justify-end">
+          <Button
+            className="bg-destructive text-white hover:bg-destructive/90"
+            onClick={() => deleteAuction(auction.id)}
+          >
+            {deletePending ? (
+              <div className="h-[150px] grid place-content-center">
+                <Loader />
+              </div>
+            ) : (
+              <>
+                <PiTrashSimpleFill className="h-4 w-4 mr-2" /> Delete
+              </>
+            )}
+          </Button>
+          <Button
+            className="bg-amber-600 text-white hover:bg-amber-500"
+            onClick={() => onEdit?.(auction)}
+          >
+            <VscEdit className="h-4 w-4 mr-2" /> Edit
+          </Button>
+        </Card.Content>
+      )}
     </Card>
   );
 };

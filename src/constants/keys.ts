@@ -7,4 +7,5 @@ export const keys = {
   products: "products",
   product: "product",
   users: "users",
+  bids: "bids",
 };

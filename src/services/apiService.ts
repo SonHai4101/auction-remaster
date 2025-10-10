@@ -1,5 +1,6 @@
 import type {
   Auction,
+  Bid,
   Category,
   Pagination,
   Product,
@@ -103,5 +104,29 @@ export const apiService = {
       axiosInstance.delete(`products/${productId}`),
     getProductById: (productId: string): Promise<Product> =>
       axiosInstance.get(`products/${productId}`).then((res) => res.data),
+  },
+
+  bid: {
+    createBid: (
+      auctionId: string,
+      body: {
+        amount: number;
+        isAutoBid: boolean;
+        maxAmount: number;
+      }
+    ) => axiosInstance.post(`bids/auction/${auctionId}`, body),
+    getBidByAuctionId: (
+      auctionId: string,
+      query: {
+        page: number;
+        limit: number;
+      }
+    ): Promise<{
+      data: Bid[];
+      pagination: Pagination;
+    }> =>
+      axiosInstance
+        .get(`bids/auction/${auctionId}`, { params: query })
+        .then((res) => res.data),
   },
 };
