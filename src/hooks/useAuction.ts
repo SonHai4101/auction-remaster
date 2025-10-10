@@ -7,6 +7,7 @@ export const useGetAllAuctions = (query: {
   limit: number;
   category?: string;
   search?: string;
+  status?: string;
   sortBy?: string;
   sortOrder?: string;
 }) => {

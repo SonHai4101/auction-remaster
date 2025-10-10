@@ -4,7 +4,6 @@ import { Dialog } from "@/components/retroui/Dialog";
 import { Loader } from "@/components/retroui/Loader";
 import { Text } from "@/components/retroui/Text";
 import { useCreateCategory, useGetAllCategories } from "@/hooks/admin/useAdmin";
-import { slugify } from "@/utils/ConvertUnit";
 import { useState } from "react";
 import { TiPlus } from "react-icons/ti";
 import { useNavigate, Outlet, useLocation } from "react-router";

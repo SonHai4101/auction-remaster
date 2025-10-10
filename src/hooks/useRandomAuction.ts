@@ -33,7 +33,7 @@ export const useRandomAuction = (allAuctions: Auction[] | undefined) => {
       "randomAuctionData",
       JSON.stringify({ auction, timeStamp: now })
     );
-  }, [allAuctions]);
+  }, [allAuctions?.length]);
 
   return randomAuction;
 };

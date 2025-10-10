@@ -17,6 +17,7 @@ import { useDeleteAuction } from "@/hooks/admin/useAdmin";
 interface AuctionCardProps {
   auction: Auction;
   onEdit?: (auction: Auction) => void;
+  onBid?: boolean,
   type?: "admin" | "user";
 }
 
@@ -149,8 +150,8 @@ export const AuctionCard = ({
               {auction.status}
             </span>
           </p>
-          {auction.status === "ACTIVE" && (
-            <Button className="w-fit">Bid</Button>
+          {type === "user" && auction.status === "ACTIVE" && (
+            <Button className="w-fit" onClick={() => {}}>Bid</Button>
           )}
         </div>
       </Card.Content>

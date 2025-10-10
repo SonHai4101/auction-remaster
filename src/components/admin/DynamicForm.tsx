@@ -5,6 +5,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { Label } from "../retroui/Label";
 import { Text } from "../retroui/Text";
+import { Switch } from "../retroui/Switch";
 
 type Field = {
   name: string;
@@ -185,6 +186,15 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
             fields[index - 1]?.type === "datetime-local"
           ) {
             return null;
+          }
+
+          if (field.type === "switch") {
+            return (
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="isAutoBid">Auto Bid</Label>
+                <Switch id="isAutoBid" />
+              </div>
+            );
           }
 
           return (

@@ -73,6 +73,7 @@ export const apiService = {
       limit: number;
       category?: string;
       search?: string;
+      status?: string;
       sortBy?: string;
       sortOrder?: string;
     }): Promise<{

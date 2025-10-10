@@ -1,3 +1,10 @@
+// export enum shopStatus {
+//   ACTIVE = "ACTIVE",
+//   ENDED = "ENDED",
+//   DRAFT = "DRAFT",
+//   CANCELLED = "CANCELLED",
+// }
+
 export interface User {
   id: string;
   email: string;
@@ -51,19 +58,19 @@ export interface Auction {
 }
 
 export interface Bid {
-  id: string
-  amount: string
-  bidderId: string
-  auctionId: string
-  isAutoBid: boolean
-  maxAmount: string
-  createdAt: string
-  bidder: Bidder
+  id: string;
+  amount: string;
+  bidderId: string;
+  auctionId: string;
+  isAutoBid: boolean;
+  maxAmount: string;
+  createdAt: string;
+  bidder: Bidder;
 }
 
 export interface Bidder {
-  id: string
-  username: string
+  id: string;
+  username: string;
 }
 
 export interface Creator {

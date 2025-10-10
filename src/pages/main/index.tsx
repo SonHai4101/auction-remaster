@@ -1,18 +1,58 @@
+import { DynamicForm } from "@/components/admin/DynamicForm";
 import { AuctionCard } from "@/components/AuctionCard";
 import { Button } from "@/components/retroui/Button";
+import { Dialog } from "@/components/retroui/Dialog";
 import { Loader } from "@/components/retroui/Loader";
 import { Text } from "@/components/retroui/Text";
+import type { Auction } from "@/constants/types";
 import { useGetAllAuctions } from "@/hooks/useAuction";
+import { useCreateBid } from "@/hooks/useBid";
 import { useRandomAuction } from "@/hooks/useRandomAuction";
+import { useState } from "react";
 import { FaArrowTrendUp } from "react-icons/fa6";
 
 export const index = () => {
+  const bidField = [
+    {
+      name: "amount",
+      label: "Amount",
+      required: true,
+      placeholder: "Enter your amount",
+    },
+    {
+      name: "isAutoBid",
+      label: "Auto Bit",
+      required: true,
+      type: "switch"
+    },
+    {
+      name: "maxAmount",
+      label: "Your maximum payment amount",
+      required: true,
+      placeholder: "Enter the maximum you can pay",
+    },
+  ];
+  const [selectAuction, setSelectAuction] = useState<Auction | null>(null);
   const { data: allAuctions, isLoading: loadingAuctions } = useGetAllAuctions({
     page: 1,
     limit: 9999,
   });
-  const randomAuction = useRandomAuction(allAuctions?.data ?? undefined);
+  const randomAuction = useRandomAuction(
+    allAuctions?.data.filter(
+      (item) => item.status === "ACTIVE" || item.status === "ENDED"
+    ) ?? undefined
+  ); 
+  const { mutate: createBid, isPending: pendingBid } = useCreateBid();
+    // const handleBid = () => {
+    //   createBid({ auctionId: auction.id, body: {
+        
+    //   }})
+    // } 
 
+
+  const handleBid = () => {
+
+  }
   return (
     <>
       <div className="w-full items-center mt-10">
@@ -93,7 +133,7 @@ export const index = () => {
                 <Loader />
               </div>
             ) : allAuctions &&
-              allAuctions.data.filter((item) => item.status === "ACTIVE")
+              allAuctions.data.filter((item) => item.status === "ACTIVE" || item.status === "ENDED")
                 .length > 0 ? (
               allAuctions?.data
                 ?.filter((item) => item.status === "ACTIVE")
@@ -110,6 +150,24 @@ export const index = () => {
                 <Text as="h4">No auctions at the moment :'(</Text>
               </div>
             )}
+            <Dialog
+            open={!!selectAuction}
+            onOpenChange={(i) => !i && setSelectAuction(null)}
+          >
+            <Dialog.Content size={"md"}>
+              <Dialog.Header>
+                <Text as="h5">Edit product</Text>
+              </Dialog.Header>
+              {selectAuction && (
+                <DynamicForm
+                  key={selectAuction.id}
+                  fields={bidField}
+                  onSubmit={handleBid}
+                  submitLabel={pendingBid ? "Bidding..." : "Bid"}
+                />
+              )}
+            </Dialog.Content>
+          </Dialog>
           </div>
         </div>
         <div className="grid place-content-center my-10">
