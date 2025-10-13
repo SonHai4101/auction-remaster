@@ -13,6 +13,7 @@ import { VscEdit } from "react-icons/vsc";
 import { Loader } from "./retroui/Loader";
 import { PiTrashSimpleFill } from "react-icons/pi";
 import { useDeleteAuction } from "@/hooks/admin/useAdmin";
+import { useBuyNow } from "@/hooks/useBid";
 
 interface AuctionCardProps {
   auction: Auction;
@@ -31,6 +32,11 @@ export const AuctionCard = ({
   const { mutate: deleteAuction, isPending: deletePending } =
     useDeleteAuction();
   const images = auction.product?.images || [];
+  const { mutate: buyNow } = useBuyNow(auction.id);
+
+  const handleBuyNow = () => {
+    buyNow();
+  }
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -152,7 +158,11 @@ export const AuctionCard = ({
               </span>
             </p>
             {type === "user" && auction.status === "ACTIVE" && (
-              <Button className="w-fit" onClick={() => onBid?.(auction.id)}>Bid</Button>
+              <div className="flex gap-2">
+
+              <Button className="w-fit text-sm" onClick={() => onBid?.(auction.id)}>Bid</Button>
+              <Button className="w-fit text-sm" variant="secondary" onClick={handleBuyNow}>Buy now</Button>
+              </div>
             )}
           </div>
         </Card.Content>

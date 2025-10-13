@@ -129,5 +129,7 @@ export const apiService = {
       axiosInstance
         .get(`bids/auction/${auctionId}`, { params: query })
         .then((res) => res.data),
+    buyNow: (auctionId: string) =>
+      axiosInstance.post(`bids/auction/${auctionId}/buy-now`),
   },
 };

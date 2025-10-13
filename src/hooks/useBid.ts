@@ -31,3 +31,13 @@ export const useGetBidByAuctionId = (
     queryFn: () => apiService.bid.getBidByAuctionId(auctionId, query),
   });
 };
+
+export const useBuyNow = (auctionId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => apiService.bid.buyNow(auctionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [keys.auctions] });
+    },
+  });
+};

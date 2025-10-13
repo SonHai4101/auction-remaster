@@ -1,5 +1,6 @@
 import { DynamicForm } from "@/components/admin/DynamicForm";
 import { AuctionCard } from "@/components/AuctionCard";
+import { Alert } from "@/components/retroui/Alert";
 import { Button } from "@/components/retroui/Button";
 import { Dialog } from "@/components/retroui/Dialog";
 import { Loader } from "@/components/retroui/Loader";
@@ -10,6 +11,15 @@ import { useCreateBid } from "@/hooks/useBid";
 import { useRandomAuction } from "@/hooks/useRandomAuction";
 import { useState } from "react";
 import { FaArrowTrendUp } from "react-icons/fa6";
+import { Bounce, toast } from "react-toastify";
+import { GiCheckMark } from "react-icons/gi";
+import {
+  notifyError,
+  notifyInfo,
+  notifySuccess,
+  notifyWarning,
+} from "@/components/CustomToast";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 type BiddingForm = {
   auctionId: string;
@@ -71,6 +81,10 @@ export const index = () => {
       {
         onSuccess: () => {
           setSelectAuction(null);
+          notifySuccess("Bid placed successfully");
+        },
+        onError(error) {
+          notifyError(getErrorMessage(error));
         },
       }
     );
@@ -154,7 +168,7 @@ export const index = () => {
               auctions
             </Text>
           </div>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {loadingAuctions ? (
               <div className="grid place-content-center">
                 <Loader />
@@ -202,6 +216,9 @@ export const index = () => {
         </div>
         <div className="grid place-content-center my-10">
           <Button variant="outline">View All Auctions</Button>
+        </div>
+        <div>
+          <Button onClick={() => notifyInfo("success !!! 123")}>Notify</Button>
         </div>
       </div>
     </>
