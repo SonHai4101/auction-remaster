@@ -12,7 +12,7 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="max-w-[1202px] m-auto w-full min-h-[100dvh] pb-20">
+      <div className="max-w-[1202px] m-auto w-full min-h-[100dvh] px-5 pb-20">
         <Header />
         {/* <Sidebar /> */}
         <div className="flex gap-10 ">

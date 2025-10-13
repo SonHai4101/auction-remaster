@@ -1,16 +1,13 @@
-import React from "react";
 import { Input } from "./retroui/Input";
 import { BiSolidBell, BiSolidFoodMenu } from "react-icons/bi";
 import { RiHeart2Fill } from "react-icons/ri";
 import { PiShoppingBagOpenFill } from "react-icons/pi";
 import { Button } from "./retroui/Button";
 import useAuthStore from "@/stores/useAuthStore";
-import { Popover } from "./retroui/Popover";
-import { Label } from "./retroui/Label";
-import { Select } from "./retroui/Select";
 import { Menu } from "./retroui/Menu";
 import { FaPowerOff } from "react-icons/fa6";
 import { useNavigate } from "react-router";
+import { Text } from "./retroui/Text";
 
 export const Header = () => {
   const user = useAuthStore((state) => state.user);
@@ -29,9 +26,9 @@ export const Header = () => {
         placeholder="Search something..."
       />
       <div className="flex gap-4">
-        <text className="">Live Auctions</text>
-        <text className="">Categories</text>
-        <text className="">Sell</text>
+        <Text className="">Live Auctions</Text>
+        <Text className="">Categories</Text>
+        <Text className="">Sell</Text>
       </div>
       <div className="flex gap-3">
         <BiSolidBell />

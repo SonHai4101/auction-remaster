@@ -1,6 +1,6 @@
 import { Button } from "../retroui/Button";
 import { Input } from "../retroui/Input";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Label } from "../retroui/Label";
@@ -38,8 +38,8 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
   const {
     register,
+    control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({ defaultValues });
 
@@ -190,9 +190,23 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
           if (field.type === "switch") {
             return (
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="isAutoBid">Auto Bid</Label>
-                <Switch id="isAutoBid" />
+              <div key={field.name} className="flex items-center space-x-2">
+                <Controller
+                  control={control}
+                  name={field.name}
+                  defaultValue={defaultValues[field.name] ?? false}
+                  rules={{ required: field.required }}
+                  render={({ field: { value, onChange, name } }) => (
+                    <>
+                      <Switch
+                        id={name}
+                        checked={!!value}
+                        onCheckedChange={(val: boolean) => onChange(val)}
+                      />
+                      <Label htmlFor={name}>{field.label}</Label>
+                    </>
+                  )}
+                />
               </div>
             );
           }
