@@ -14,7 +14,7 @@ export const useCreateBid = () => {
       };
     }) => apiService.bid.createBid(params.auctionId, params.body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [keys.bids] });
+      queryClient.invalidateQueries({ queryKey: [keys.auctions] });
     },
   });
 };
