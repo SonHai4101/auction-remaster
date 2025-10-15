@@ -40,9 +40,11 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     register,
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({ defaultValues });
 
+  const isAutoBidEnabled = watch("isAutoBid", defaultValues["isAutoBid"] ?? false)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
@@ -209,6 +211,30 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 />
               </div>
             );
+          }
+
+          if (field.name === "maxAmount") {
+            if (!isAutoBidEnabled) return null;
+
+            return (
+              <div>
+                <Label htmlFor={field.name}>
+                  {field.label} {field.required && <span className="text-red-500">*</span>}
+                </Label>
+                <Input
+                  id={field.name}
+                  type={field.type || "text"}
+                  placeholder={field.placeholder}
+                  readOnly={field.readOnly}
+                  {...register(field.name, { required: field.required })}
+                />
+                {errors[field.name] && (
+                  <p className="text-red-500 text-sm">
+                    {field.label} is required
+                  </p>
+                )}
+              </div>
+            )
           }
 
           return (

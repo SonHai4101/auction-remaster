@@ -1,25 +1,22 @@
 import { DynamicForm } from "@/components/admin/DynamicForm";
 import { AuctionCard } from "@/components/AuctionCard";
-import { Alert } from "@/components/retroui/Alert";
 import { Button } from "@/components/retroui/Button";
 import { Dialog } from "@/components/retroui/Dialog";
 import { Loader } from "@/components/retroui/Loader";
 import { Text } from "@/components/retroui/Text";
-import type { Auction } from "@/constants/types";
 import { useGetAllAuctions } from "@/hooks/useAuction";
 import { useCreateBid } from "@/hooks/useBid";
 import { useRandomAuction } from "@/hooks/useRandomAuction";
 import { useState } from "react";
 import { FaArrowTrendUp } from "react-icons/fa6";
-import { Bounce, toast } from "react-toastify";
-import { GiCheckMark } from "react-icons/gi";
 import {
   notifyError,
   notifyInfo,
   notifySuccess,
-  notifyWarning,
 } from "@/components/CustomToast";
 import { getErrorMessage } from "@/utils/getErrorMessage";
+import { useModal } from "@ebay/nice-modal-react";
+import { AnnouncementModal } from "@/components/AnnouncementModal";
 
 type BiddingForm = {
   auctionId: string;
@@ -29,6 +26,16 @@ type BiddingForm = {
 };
 
 export const index = () => {
+  const modal = useModal(AnnouncementModal)
+  const handleModal = () => {
+    modal.show({
+      title: <>Test modal</>,
+      description: "This is a test modal",
+      cancelButtonText: "Cancel",
+      confirmButtonText: "Confirm",
+      size: "xl"
+    })
+  }
   const bidField = [
     {
       name: "auctionId",
@@ -218,7 +225,7 @@ export const index = () => {
           <Button variant="outline">View All Auctions</Button>
         </div>
         <div>
-          <Button onClick={() => notifyInfo("success !!! 123")}>Notify</Button>
+          <Button onClick={handleModal}>Notify</Button>
         </div>
       </div>
     </>

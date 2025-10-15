@@ -7,6 +7,14 @@ export const useRandomAuction = (allAuctions: Auction[] | undefined) => {
 
   useEffect(() => {
     if (!allAuctions || allAuctions.length === 0) return;
+
+    const activeAuctions = allAuctions.filter((auction) => auction.status === "ACTIVE");
+    if (activeAuctions.length === 0) {
+      setRandomAuction(null);
+      localStorage.removeItem("randomAuctionData");
+      return;
+    }
+    
     const stored = localStorage.getItem("randomAuctionData");
     const now = Date.now();
 
@@ -16,7 +24,7 @@ export const useRandomAuction = (allAuctions: Auction[] | undefined) => {
         const { auction, timeStamp } = parsed || {};
         const hoursPassed = (now - timeStamp) / (1000 * 60 * 60);
 
-        if (hoursPassed < HOURS_INTERVAL && auction) {
+        if (hoursPassed < HOURS_INTERVAL && activeAuctions) {
           setRandomAuction(auction);
           return;
         }
@@ -25,15 +33,15 @@ export const useRandomAuction = (allAuctions: Auction[] | undefined) => {
         localStorage.removeItem("randomAuctionData");
       }
     }
-    const randomIndex = Math.floor(Math.random() * allAuctions.length);
-    const auction = allAuctions[randomIndex];
+    const randomIndex = Math.floor(Math.random() * activeAuctions.length);
+    const auction = activeAuctions[randomIndex];
 
     setRandomAuction(auction);
     localStorage.setItem(
       "randomAuctionData",
       JSON.stringify({ auction, timeStamp: now })
     );
-  }, [allAuctions?.length]);
+  }, [allAuctions?.length, JSON.stringify(allAuctions?.map((a) => a.status))]);
 
   return randomAuction;
 };
