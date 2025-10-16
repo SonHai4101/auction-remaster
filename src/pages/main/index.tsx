@@ -33,7 +33,8 @@ export const index = () => {
       description: "This is a test modal",
       cancelButtonText: "Cancel",
       confirmButtonText: "Confirm",
-      size: "xl"
+      size: "xl",
+      onCancel: () => modal.hide()
     })
   }
   const bidField = [
@@ -224,9 +225,9 @@ export const index = () => {
         <div className="grid place-content-center my-10">
           <Button variant="outline">View All Auctions</Button>
         </div>
-        <div>
+        {/* <div>
           <Button onClick={handleModal}>Notify</Button>
-        </div>
+        </div> */}
       </div>
     </>
   );

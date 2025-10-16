@@ -34,7 +34,7 @@ export const AdminSidebar = () => {
         <div className="border-b-2 py-1">
           <a href="/" className="flex ms-2 md:me-24">
             <img
-              src="/icon/logo-md.png"
+              src="/public/icon/retro-logo-transparent-bg.png"
               className="h-16 me-3"
               alt="FlowBite Logo"
             />

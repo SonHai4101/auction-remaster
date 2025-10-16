@@ -1,5 +1,6 @@
 // import Sidebar from '../components/sidebar/Sidebar';
 // import Header from '../components/header/Header';
+import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import useAuthStore from "@/stores/useAuthStore";
 import { Outlet } from "react-router";
@@ -12,7 +13,7 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="max-w-[1202px] m-auto w-full min-h-[100dvh] px-5 pb-20">
+      <div className="max-w-[1202px] m-auto w-full min-h-[100dvh] px-5">
         <Header />
         {/* <Sidebar /> */}
         <div className="flex gap-10 ">
@@ -20,6 +21,7 @@ const HomePage = () => {
             <Outlet />
           </div>
         </div>
+        <Footer />
       </div>
     </>
   );

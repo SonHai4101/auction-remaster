@@ -50,12 +50,12 @@ export const AnnouncementModal = NiceModal.create<AnnouncementModalProps>(
             </div>
             <div className="flex gap-2 justify-end">
 
+            <Button onClick={onConfirm}>{confirmButtonText}</Button>
             {!hideCancelButton && (
               <Button variant="secondary" onClick={onCancel}>
                 {cancelButtonText}
               </Button>
             )}
-            <Button onClick={onConfirm}>{confirmButtonText}</Button>
             </div>
           </Card.Content>
         </Card>

@@ -19,7 +19,7 @@ export const Header = () => {
   };
   return (
     <div className="flex items-center justify-between">
-      <img className="h-20" src="/icon/logo-md.png" />
+      <img className="h-20" src="/icon/retro-logo-transparent-bg.png" />
       <Input
         className="max-w-[300px] h-10 rounded-md"
         type="text"
