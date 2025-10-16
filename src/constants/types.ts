@@ -50,7 +50,7 @@ export interface Auction {
   winnerId: any;
   createdAt: string;
   updatedAt: string;
-  winner: string;
+  winner: Winner;
   creator: Creator;
   product: Product;
   bids: Bid[];
@@ -66,6 +66,11 @@ export interface Bid {
   maxAmount: string;
   createdAt: string;
   bidder: Bidder;
+}
+
+export interface Winner {
+  id: string;
+  username: string;
 }
 
 export interface Bidder {

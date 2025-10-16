@@ -17,6 +17,8 @@ import {
   TabsTriggerList,
 } from "@/components/retroui/Tab";
 import type { Auction } from "@/constants/types";
+import { notifyError, notifySuccess } from "@/components/CustomToast";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 type AuctionForm = {
   title: string;
@@ -89,6 +91,10 @@ export const Dashboard = () => {
       {
         onSuccess: () => {
           setOpen(false);
+          notifySuccess("Create auction successfully");
+        },
+        onError(error) {
+          notifyError(getErrorMessage(error));
         },
       }
     );
@@ -128,7 +134,7 @@ export const Dashboard = () => {
               &nbsp;Create
             </Button>
           </Dialog.Trigger>
-          <Dialog.Content size={"md"}>
+          <Dialog.Content size={"auto"}>
             <Dialog.Header position={"fixed"}>
               <Text as="h5">Create a new auction</Text>
             </Dialog.Header>

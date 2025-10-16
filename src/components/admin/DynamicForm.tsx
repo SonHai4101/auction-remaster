@@ -158,7 +158,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
             fields[index + 1]?.type === "datetime-local"
           ) {
             return (
-              <div key={field.name} className="flex gap-2 w-full">
+              <div key={field.name} className="flex flex-col sm:flex-row gap-4 sm:gap-2 w-full">
                 {[field, fields[index + 1]].map((f) => (
                   <div className="flex flex-col gap-2 w-full" key={f.name}>
                     <Label htmlFor={f.name}>

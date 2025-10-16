@@ -131,7 +131,7 @@ export const CategoryDetail = () => {
             </Button>
           </Dialog.Trigger>
           {open && (
-            <Dialog.Content size={"md"}>
+            <Dialog.Content size="auto">
               <Dialog.Header position={"fixed"}>
                 <Text as="h5">Create a new product</Text>
               </Dialog.Header>
@@ -148,7 +148,7 @@ export const CategoryDetail = () => {
       </div>
       <div className="">
         <Text as="h3">List of Items</Text>
-        <div className="mt-5 p-2 flex flex-col gap-3 overflow-auto max-h-[610px] border-4 border-double">
+        <div className="mt-5 p-2 flex flex-col gap-3 overflow-auto max-h-screen border-4 border-double">
           {productsLoading ? (
             <div className="h-[150px] grid place-content-center">
               <Loader />
@@ -166,7 +166,7 @@ export const CategoryDetail = () => {
             open={!!editProduct}
             onOpenChange={(i) => !i && setEditProduct(null)}
           >
-            <Dialog.Content size={"md"}>
+            <Dialog.Content size={"auto"}>
               <Dialog.Header>
                 <Text as="h5">Edit product</Text>
               </Dialog.Header>

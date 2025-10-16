@@ -134,7 +134,7 @@ export const AuctionCard = ({
           {auction.status === "ENDED" && (
             <div className="flex justify-between">
               <p className="text-lg font-semibold">Winner:</p>
-              <p className="text-lg font-semibold">{auction.winner ?? "None"}</p>
+              <p className="text-lg font-semibold">{auction?.winner?.username ?? "None"}</p>
             </div>
           )}
           {auction.status === "ACTIVE" && (
