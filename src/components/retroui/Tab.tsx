@@ -3,11 +3,11 @@ import {
   Tab,
   TabGroup,
   TabList,
-  TabListProps,
+  type TabListProps,
   TabPanel,
-  TabPanelProps,
+  type TabPanelProps,
   TabPanels,
-  TabProps,
+  type TabProps,
 } from "@headlessui/react";
 
 const Tabs = TabGroup;

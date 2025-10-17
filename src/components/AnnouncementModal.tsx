@@ -5,7 +5,7 @@ import { Card } from "./retroui/Card";
 import { Button } from "./retroui/Button";
 
 interface AnnouncementModalProps {
-  description: string;
+  description: React.ReactNode;
   title?: React.ReactNode;
   icon?: React.ReactNode;
   cancelButtonText?: string;
@@ -45,7 +45,7 @@ export const AnnouncementModal = NiceModal.create<AnnouncementModalProps>(
           </Card.Header>
           <Card.Content>
             {icon}
-            <div className="text-lg text-gray-500 dark:text-gray-400">
+            <div className="text-lg pb-5 text-gray-500 dark:text-gray-400">
               {description}
             </div>
             <div className="flex gap-2 justify-end">

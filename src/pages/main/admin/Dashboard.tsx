@@ -30,45 +30,54 @@ type AuctionForm = {
   productId: string;
 };
 
+const auctionFields = [
+  {
+    name: "title",
+    label: "Title",
+    required: true,
+    placeholder: "Type title",
+  },
+  {
+    name: "description",
+    label: "Description",
+    placeholder: "Type description",
+  },
+  { name: "startPrice", label: "Start Price", type: "number" },
+  {
+    name: "buyNowPrice",
+    label: "Buy Now Price",
+    type: "number",
+    required: true,
+  },
+  {
+    name: "startTime",
+    label: "Start Time",
+    type: "datetime-local",
+    required: true,
+  },
+  {
+    name: "endTime",
+    label: "End Time",
+    type: "datetime-local",
+    required: true,
+  },
+  {
+    name: "productId",
+    label: "Product Id",
+    required: true,
+    placeholder: "Type product Id",
+  },
+];
+
+const auctionTabs = [
+  { label: "Ongoing", status: "ACTIVE", color: "text-green-500" },
+  { label: "Pending", status: "PENDING", color: "text-blue-400" },
+  { label: "Ended", status: "ENDED", color: "text-red-600" },
+  { label: "Draft", status: "DRAFT", color: "text-gray-600" },
+  { label: "Cancelled", status: "CANCELLED", color: "text-yellow-500" },
+];
+
 export const Dashboard = () => {
-  const auctionFields = [
-    {
-      name: "title",
-      label: "Title",
-      required: true,
-      placeholder: "Type title",
-    },
-    {
-      name: "description",
-      label: "Description",
-      placeholder: "Type description",
-    },
-    { name: "startPrice", label: "Start Price", type: "number" },
-    {
-      name: "buyNowPrice",
-      label: "Buy Now Price",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "startTime",
-      label: "Start Time",
-      type: "datetime-local",
-      required: true,
-    },
-    {
-      name: "endTime",
-      label: "End Time",
-      type: "datetime-local",
-      required: true,
-    },
-    {
-      name: "productId",
-      label: "Product Id",
-      required: true,
-      placeholder: "Type product Id",
-    },
-  ];
   const { data: allAuctions, isLoading } = useGetAllAuctions({
     page: 1,
     limit: 9999,
@@ -150,127 +159,49 @@ export const Dashboard = () => {
       <div className=" mt-5 p-5 border-4 border-double">
         <Tabs>
           <TabsTriggerList>
-            <TabsTrigger>Ongoing</TabsTrigger>
-            <TabsTrigger>End</TabsTrigger>
-            <TabsTrigger>Draft</TabsTrigger>
-            <TabsTrigger>Cancel</TabsTrigger>
+            {auctionTabs.map((tab) => (
+              <TabsTrigger key={tab.status}>{tab.label}</TabsTrigger>
+            ))}
           </TabsTriggerList>
           <TabsPanels>
-            <TabsContent>
-              <Text
-                as="h3"
-                className="text-green-500 animate-pulse animation-duration-[0.5s]"
-              >
-                Ongoing auction
-              </Text>
-              <div className="grid grid-cols-3 gap-4 mt-2 ">
-                {isLoading ? (
-                  <div className="grid place-content-center">
-                    <Loader />
+            {auctionTabs.map((tab) => {
+              const filterAuctions = allAuctions?.data.filter(
+                (auction) => auction.status === tab.status
+              );
+              return (
+                <TabsContent key={tab.status}>
+                  <Text
+                    as="h3"
+                    className={`${tab.color} ${
+                      tab.status === "ACTIVE"
+                        ? "animate-pulse animation-duration-[0.5s]"
+                        : ""
+                    } `}
+                  >
+                    {tab.label} Auction
+                  </Text>
+                  <div className="grid grid-cols-3 lg:grid-cols-4 gap-4 mt-2 ">
+                    {isLoading ? (
+                      <div className="grid place-content-center">
+                        <Loader />
+                      </div>
+                    ) : filterAuctions && filterAuctions.length > 0 ? (
+                      filterAuctions?.map((item) => (
+                        <AuctionCard
+                          key={item.id}
+                          auction={item}
+                          onEdit={setEditAuction}
+                        />
+                      ))
+                    ) : (
+                      <div className="h-[150px] grid place-content-center">
+                        <Text as="h4">No auction found :'(</Text>
+                      </div>
+                    )}
                   </div>
-                ) : allAuctions &&
-                  allAuctions.data.filter((item) => item.status === "ACTIVE")
-                    .length > 0 ? (
-                  allAuctions?.data
-                    ?.filter((item) => item.status === "ACTIVE")
-                    .map((item) => (
-                      <AuctionCard
-                        key={item.id}
-                        auction={item}
-                        onEdit={setEditAuction}
-                      />
-                    ))
-                ) : (
-                  <div className="h-[150px] grid place-content-center">
-                    <Text as="h4">No auction found :'(</Text>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-            <TabsContent>
-              <Text as="h3" className="text-red-600">
-                Ended auction
-              </Text>
-              <div className="grid grid-cols-3 gap-4 mt-2 ">
-                {isLoading ? (
-                  <div className="grid place-content-center">
-                    <Loader />
-                  </div>
-                ) : allAuctions &&
-                  allAuctions.data.filter((item) => item.status === "ENDED")
-                    .length > 0 ? (
-                  allAuctions?.data
-                    ?.filter((item) => item.status === "ENDED")
-                    .map((item) => (
-                      <AuctionCard
-                        key={item.id}
-                        auction={item}
-                        onEdit={setEditAuction}
-                      />
-                    ))
-                ) : (
-                  <div className="h-[150px] grid place-content-center">
-                    <Text as="h4">No auction found :'(</Text>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-            <TabsContent>
-              <Text as="h3" className="text-gray-600">
-                Pending Auction
-              </Text>
-              <div className="grid grid-cols-3 gap-4 mt-2 ">
-                {isLoading ? (
-                  <div className="grid place-content-center">
-                    <Loader />
-                  </div>
-                ) : allAuctions &&
-                  allAuctions.data.filter((item) => item.status === "DRAFT")
-                    .length > 0 ? (
-                  allAuctions?.data
-                    ?.filter((item) => item.status === "DRAFT")
-                    .map((item) => (
-                      <AuctionCard
-                        key={item.id}
-                        auction={item}
-                        onEdit={setEditAuction}
-                      />
-                    ))
-                ) : (
-                  <div className="h-[150px] grid col-span-full place-content-center">
-                    <Text as="h4">No auction found :'(</Text>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-            <TabsContent>
-              <Text as="h3" className="text-yellow-500">
-                Cancelled Auction
-              </Text>
-              <div className="grid grid-cols-3 gap-4 mt-2 ">
-                {isLoading ? (
-                  <div className="grid place-content-center">
-                    <Loader />
-                  </div>
-                ) : allAuctions &&
-                  allAuctions.data.filter((item) => item.status === "CANCELLED")
-                    .length > 0 ? (
-                  allAuctions?.data
-                    ?.filter((item) => item.status === "CANCELLED")
-                    .map((item) => (
-                      <AuctionCard
-                        key={item.id}
-                        auction={item}
-                        onEdit={setEditAuction}
-                      />
-                    ))
-                ) : (
-                  <div className="h-[150px] grid col-span-full place-content-center">
-                    <Text as="h4">No auction found :'(</Text>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
+                </TabsContent>
+              );
+            })}
           </TabsPanels>
         </Tabs>
         <Dialog

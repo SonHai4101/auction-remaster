@@ -32,10 +32,10 @@ export const useGetBidByAuctionId = (
   });
 };
 
-export const useBuyNow = (auctionId: string) => {
+export const useBuyNow = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => apiService.bid.buyNow(auctionId),
+    mutationFn: (auctionId: string) => apiService.bid.buyNow(auctionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [keys.auctions] });
     },

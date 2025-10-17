@@ -12,13 +12,21 @@ import { CountDownTimer } from "./CountDownTimer";
 import { VscEdit } from "react-icons/vsc";
 import { Loader } from "./retroui/Loader";
 import { PiTrashSimpleFill } from "react-icons/pi";
-import { useDeleteAuction } from "@/hooks/admin/useAdmin";
+import {
+  useChangeAuctionStatus,
+  useDeleteAuction,
+} from "@/hooks/admin/useAdmin";
 import { useBuyNow } from "@/hooks/useBid";
+import { Select } from "./retroui/Select";
+import { notifyError, notifySuccess } from "./CustomToast";
+import { getErrorMessage } from "@/utils/getErrorMessage";
+import { useModal } from "@ebay/nice-modal-react";
+import { AnnouncementModal } from "./AnnouncementModal";
 
 interface AuctionCardProps {
   auction: Auction;
   onEdit?: (auction: Auction) => void;
-  onBid?: (auctionId : string) => void;
+  onBid?: (auctionId: string) => void;
   type?: "admin" | "user";
 }
 
@@ -32,11 +40,64 @@ export const AuctionCard = ({
   const { mutate: deleteAuction, isPending: deletePending } =
     useDeleteAuction();
   const images = auction.product?.images || [];
-  const { mutate: buyNow } = useBuyNow(auction.id);
+  const { mutate: buyNow } = useBuyNow();
+  const { mutate: changeAuctionStatus, isPending: pendingChangeStatus } =
+    useChangeAuctionStatus();
+  const modal = useModal(AnnouncementModal);
 
   const handleBuyNow = () => {
-    buyNow();
-  }
+    modal.show({
+      title: <>Buy this {auction.product.title}</>,
+      description: <>Do you want to buy this item for $ {formatNumber(Number(auction.buyNowPrice))}?</>,
+      confirmButtonText: "Absolutely!!!",
+      cancelButtonText: "Nah!",
+      onCancel: () => modal.hide(),
+      onConfirm: () => {
+        buyNow(auction.id, {
+          onSuccess: () => {
+            notifySuccess("Buy successfully");
+          },
+          onError(error) {
+            notifyError(getErrorMessage(error));
+          },
+        });
+      },
+    });
+  };
+
+  const handleDelete = () => {
+    modal.show({
+      title: <>Delete {auction.title}</>,
+      description: "Are you sure???",
+      confirmButtonText: "Absolutely!!!",
+      cancelButtonText: "Nah!",
+      onCancel: () => modal.hide(),
+      onConfirm: () => {
+        deleteAuction(auction.id, {
+          onSuccess: () => {
+            notifySuccess("Delete successfully");
+          },
+          onError(error) {
+            notifyError(getErrorMessage(error));
+          },
+        });
+      },
+    });
+  };
+
+  const handleChange = (status: string) => {
+    changeAuctionStatus(
+      { auctionId: auction.id, body: { status } },
+      {
+        onSuccess: () => {
+          notifySuccess("Change successfully");
+        },
+        onError(error) {
+          notifyError(getErrorMessage(error));
+        },
+      }
+    );
+  };
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -62,7 +123,7 @@ export const AuctionCard = ({
                   "/icon/item-icon.png"
                 }
                 alt={`Post image ${currentImageIndex + 1}`}
-                className="w-[304px] h-[304px] object-cover border-2"
+                className="w-full min-h-[304px] object-cover border-2"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -100 }}
@@ -134,7 +195,9 @@ export const AuctionCard = ({
           {auction.status === "ENDED" && (
             <div className="flex justify-between">
               <p className="text-lg font-semibold">Winner:</p>
-              <p className="text-lg font-semibold">{auction?.winner?.username ?? "None"}</p>
+              <p className="text-lg font-semibold">
+                {auction?.winner?.username ?? "None"}
+              </p>
             </div>
           )}
           {auction.status === "ACTIVE" && (
@@ -150,7 +213,9 @@ export const AuctionCard = ({
               Status:{" "}
               <span
                 className={
-                  auction.status === "ACTIVE" ? "text-green-500" : "text-red-500"
+                  auction.status === "ACTIVE"
+                    ? "text-green-500"
+                    : "text-red-500"
                 }
               >
                 {" "}
@@ -159,10 +224,38 @@ export const AuctionCard = ({
             </p>
             {type === "user" && auction.status === "ACTIVE" && (
               <div className="flex gap-2">
-
-              <Button className="w-fit text-sm" onClick={() => onBid?.(auction.id)}>Bid</Button>
-              <Button className="w-fit text-sm" variant="secondary" onClick={handleBuyNow}>Buy now</Button>
+                <Button
+                  className="w-fit text-sm"
+                  onClick={() => onBid?.(auction.id)}
+                >
+                  Bid
+                </Button>
+                <Button
+                  className="w-fit text-sm"
+                  variant="secondary"
+                  onClick={handleBuyNow}
+                >
+                  Buy now
+                </Button>
               </div>
+            )}
+            {type === "admin" && (
+              <Select
+                onValueChange={handleChange}
+                disabled={pendingChangeStatus}
+              >
+                <Select.Trigger className="text-sm">
+                  <Select.Value placeholder="Change status" />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Group>
+                    <Select.Item value="ACTIVE">ACTIVE</Select.Item>
+                    <Select.Item value="DRAFT">DRAFT</Select.Item>
+                    <Select.Item value="CANCELLED">CANCELLED</Select.Item>
+                    <Select.Item value="PENDING">PENDING</Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select>
             )}
           </div>
         </Card.Content>
@@ -170,7 +263,7 @@ export const AuctionCard = ({
           <Card.Content className="flex gap-2 flex-none justify-end">
             <Button
               className="bg-destructive text-white hover:bg-destructive/90"
-              onClick={() => deleteAuction(auction.id)}
+              onClick={handleDelete}
             >
               {deletePending ? (
                 <div className="h-[150px] grid place-content-center">

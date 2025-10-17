@@ -11,12 +11,9 @@ import { useState } from "react";
 import { FaArrowTrendUp } from "react-icons/fa6";
 import {
   notifyError,
-  notifyInfo,
   notifySuccess,
 } from "@/components/CustomToast";
 import { getErrorMessage } from "@/utils/getErrorMessage";
-import { useModal } from "@ebay/nice-modal-react";
-import { AnnouncementModal } from "@/components/AnnouncementModal";
 
 type BiddingForm = {
   auctionId: string;
@@ -26,17 +23,6 @@ type BiddingForm = {
 };
 
 export const index = () => {
-  const modal = useModal(AnnouncementModal)
-  const handleModal = () => {
-    modal.show({
-      title: <>Test modal</>,
-      description: "This is a test modal",
-      cancelButtonText: "Cancel",
-      confirmButtonText: "Confirm",
-      size: "xl",
-      onCancel: () => modal.hide()
-    })
-  }
   const bidField = [
     {
       name: "auctionId",

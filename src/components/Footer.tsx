@@ -1,19 +1,22 @@
-import { IoLogoFacebook, IoLogoInstagram, IoMail } from 'react-icons/io5'
+import { IoLogoFacebook, IoLogoInstagram, IoMail } from "react-icons/io5";
 import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
-import { RiTwitterXFill } from 'react-icons/ri';
-import { Button } from './retroui/Button';
-import { Card } from './retroui/Card';
+import { RiTwitterXFill } from "react-icons/ri";
+import { Button } from "./retroui/Button";
+import { Card } from "./retroui/Card";
 
 export const Footer = () => {
   return (
-    <footer className="bg-[#3d2817] border-t-4 border-[#c9a16c] mt-16">
-      <div className="container mx-auto px-4 py-12">
+    <footer className="bg-[#633c1d] border-t-4 border-[#c9a16c] mt-16">
+      <div className="max-w-[1202px] mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Brand Section */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-                {/* <Gavel className="h-6 w-6 text-[#fef5e7]" /> */}
-                <img className="h-10 w-10" src='/icon/retro-logo-transparent-bg.png' />
+              {/* <Gavel className="h-6 w-6 text-[#fef5e7]" /> */}
+              <img
+                className="h-10 w-10"
+                src="/icon/retro-logo-transparent-bg.png"
+              />
               {/* <div className="bg-[#ffdb33] p-2 border-2 border-[#c9a16c]">
               </div> */}
               <div>
@@ -22,9 +25,10 @@ export const Footer = () => {
               </div>
             </div>
             <p className="text-[#f4e4cd] text-sm leading-relaxed">
-              Your trusted marketplace for authentic vintage treasures and antiques since 1995.
+              Your trusted marketplace for authentic vintage treasures and
+              antiques since 1995.
             </p>
-            
+
             <div className="flex gap-3 mt-4">
               <Button className="p-2 border-2 ">
                 <IoLogoFacebook className="h-4 w-4" />
@@ -45,27 +49,42 @@ export const Footer = () => {
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm">
+                <a
+                  href="#"
+                  className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm"
+                >
                   → About Us
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm">
+                <a
+                  href="#"
+                  className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm"
+                >
                   → How It Works
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm">
+                <a
+                  href="#"
+                  className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm"
+                >
                   → Sell Items
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm">
+                <a
+                  href="#"
+                  className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm"
+                >
                   → FAQ
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm">
+                <a
+                  href="#"
+                  className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm"
+                >
                   → Blog
                 </a>
               </li>
@@ -79,27 +98,42 @@ export const Footer = () => {
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm">
+                <a
+                  href="#"
+                  className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm"
+                >
                   → Furniture
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm">
+                <a
+                  href="#"
+                  className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm"
+                >
                   → Electronics
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm">
+                <a
+                  href="#"
+                  className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm"
+                >
                   → Photography
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm">
+                <a
+                  href="#"
+                  className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm"
+                >
                   → Watches & Jewelry
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm">
+                <a
+                  href="#"
+                  className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors text-sm"
+                >
                   → Art & Decor
                 </a>
               </li>
@@ -142,13 +176,22 @@ export const Footer = () => {
               © 1995-2025 Retro Auctions. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm">
-              <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors">
+              <a
+                href="#"
+                className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors"
+              >
                 Privacy Policy
               </a>
-              <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors">
+              <a
+                href="#"
+                className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors"
+              >
                 Terms of Service
               </a>
-              <a href="#" className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors">
+              <a
+                href="#"
+                className="text-[#f4e4cd] hover:text-[#ffdb33] transition-colors"
+              >
                 Cookie Policy
               </a>
             </div>
@@ -159,5 +202,5 @@ export const Footer = () => {
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};

@@ -90,3 +90,14 @@ export const useGetUsers = () => {
     queryFn: () => apiService.admin.getUsers(),
   });
 };
+
+export const useChangeAuctionStatus = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: { auctionId: string; body: { status: string } }) =>
+      apiService.admin.changeAuctionStatus(params.auctionId, params.body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [keys.auctions] });
+    },
+  });
+};

@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { HiUsers } from "react-icons/hi2";
 import { BiSolidInbox } from "react-icons/bi";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
+import { Text } from "../retroui/Text";
 
 export const AdminSidebar = () => {
   const sidebarItem1 = [
@@ -32,13 +33,17 @@ export const AdminSidebar = () => {
         aria-label="Sidebar"
       >
         <div className="border-b-2 py-1">
-          <a href="/" className="flex ms-2 md:me-24">
+
+          <a href="/" className="flex items-center ms-2">
             <img
               src="/public/icon/retro-logo-transparent-bg.png"
-              className="h-16 me-3"
+              className="h-16"
               alt="FlowBite Logo"
             />
+            <Text as="h5">AUCTION HOUSE</Text>
+
           </a>
+
         </div>
         <div className="border-b-2">
           <div className="flex gap-3 items-center p-4">

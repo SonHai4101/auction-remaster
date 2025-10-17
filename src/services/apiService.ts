@@ -65,6 +65,8 @@ export const apiService = {
         .then((res) => res.data),
     getUsers: (): Promise<User[]> =>
       axiosInstance.get("users/").then((res) => res.data),
+    changeAuctionStatus: (id: string, body: { status: string }) =>
+      axiosInstance.patch(`auctions/${id}`, body),
   },
 
   auction: {

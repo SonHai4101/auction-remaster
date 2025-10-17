@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { HttpStatusCode } from "axios";
-import { persist } from "zustand/middleware";
 import type { User } from "@/constants/types";
 import { axiosInstance } from "@/lib/axios";
 
