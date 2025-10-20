@@ -1,6 +1,8 @@
 import { keys } from "@/constants/keys";
+import type { Auction } from "@/constants/types";
 import { apiService } from "@/services/apiService";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 export const useGetAllAuctions = (query: {
   page: number;
@@ -23,3 +25,21 @@ export const useGetAuctionById = (id: string) => {
     queryFn: () => apiService.auction.getAuctionById({ id }),
   });
 };
+
+export const useEndingSoonAuctions = (
+  auctions: Auction[] | undefined,
+  thresholdHours = 1
+) => {
+  const endingSoon = useMemo(() => {
+    if (!auctions) return[];
+    const now = Date.now();
+    const thresholdMs = thresholdHours * 60 * 60 * 1000;
+
+    return auctions.filter((auction) => {
+      const endTime = new Date(auction.endTime).getTime();
+      return endTime > now && endTime - now <= thresholdMs;
+    })
+  }, [auctions, thresholdHours])
+
+  return endingSoon;
+}

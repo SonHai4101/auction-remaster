@@ -48,7 +48,12 @@ export const AuctionCard = ({
   const handleBuyNow = () => {
     modal.show({
       title: <>Buy this {auction.product.title}</>,
-      description: <>Do you want to buy this item for $ {formatNumber(Number(auction.buyNowPrice))}?</>,
+      description: (
+        <>
+          Do you want to buy this item for ${" "}
+          {formatNumber(Number(auction.buyNowPrice))}?
+        </>
+      ),
       confirmButtonText: "Absolutely!!!",
       cancelButtonText: "Nah!",
       onCancel: () => modal.hide(),
@@ -123,7 +128,7 @@ export const AuctionCard = ({
                   "/icon/item-icon.png"
                 }
                 alt={`Post image ${currentImageIndex + 1}`}
-                className="w-full min-h-[304px] object-cover border-2"
+                className="w-[310px] h-[310px] object-cover border-2"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -100 }}
@@ -133,9 +138,17 @@ export const AuctionCard = ({
           ) : (
             <img
               src="/icon/item-icon.png"
-              className="w-[304px] h-[304px] object-cover border-2"
+              className="w-[310px] h-[310px] object-cover border-2"
               alt="Gameboy"
             />
+          )}
+          {new Date(auction.endTime).getTime() - Date.now() <=
+            60 * 60 * 1000 && (
+            <div className="absolute bottom-0 w-[310px] h-[310px] bg-red-500/30 flex items-center justify-center">
+              <span className="text-red-500 text-3xl font-semibold animate-blink">
+                Ending Soon
+              </span>
+            </div>
           )}
           {auction.product?.images?.length > 1 && (
             <>

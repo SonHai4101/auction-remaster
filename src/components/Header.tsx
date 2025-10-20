@@ -20,7 +20,9 @@ export const Header = () => {
   return (
     <div className="sticky top-0 z-50 bg-[#633c1d] border-b-4 text-white">
       <div className="max-w-[1202px] mx-auto flex items-center justify-between ">
-        <img className="h-20" src="/icon/retro-logo-transparent-bg.png" />
+        <Link to="/">
+          <img className="h-20" src="/icon/retro-logo-transparent-bg.png" />
+        </Link>
         <Input
           className="max-w-[300px] h-10 rounded-md bg-white text-black"
           type="text"

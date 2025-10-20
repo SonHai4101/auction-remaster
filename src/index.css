@@ -185,3 +185,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes blink {
+  0%, 100% {
+    color: #fff;
+  }
+  50% {
+    color: red;
+  }
+}
+
+.animate-blink {
+  animation: blink 0.2s infinite;
+}
