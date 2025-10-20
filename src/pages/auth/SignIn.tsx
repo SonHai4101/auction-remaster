@@ -1,8 +1,10 @@
+import { notifyError, notifySuccess } from "@/components/CustomToast";
 import { Button } from "@/components/retroui/Button";
 import { Input } from "@/components/retroui/Input";
 import { Label } from "@/components/retroui/Label";
 import { Text } from "@/components/retroui/Text";
 import useAuthStore from "@/stores/useAuthStore";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 import { useState } from "react";
 import { MdEmail } from "react-icons/md";
 import { PiEyeClosedBold, PiEyesFill } from "react-icons/pi";
@@ -26,9 +28,11 @@ export const SignIn = () => {
     try {
       await logIn(username, password).then(() => {
         navigate("/");
+        notifySuccess("Sign in successfully")
       });
     } catch (error) {
       console.log("Login failed:", error);
+      notifyError(getErrorMessage(error))
     }
   };
   return (

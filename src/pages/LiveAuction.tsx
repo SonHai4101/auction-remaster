@@ -21,6 +21,8 @@ export const LiveAuction = () => {
     limit: 9999,
     status: "ACTIVE",
   });
+  console.log("auction", allActiveAuctions);
+  
   return (
     <div>
       <section className="bg-background border-b-4 border-black">

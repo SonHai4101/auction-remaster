@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { Loader } from "../retroui/Loader";
 
-export const ClientLayout = () => {
+export const AdminLayout = () => {
   const navigate = useNavigate();
   const { user, isLoading, loadFromSession } = useAuthStore();
 
@@ -31,4 +31,4 @@ export const ClientLayout = () => {
   );
 };
 
-export default ClientLayout;
+export default AdminLayout;

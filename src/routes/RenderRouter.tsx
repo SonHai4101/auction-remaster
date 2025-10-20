@@ -2,7 +2,7 @@
 import React from "react";
 import { useRoutes } from "react-router";
 import { privateRoutes, publicRoutes } from "./routes";
-import ClientLayout from "@/components/Layouts/ClientLayout";
+import  AdminLayout from "@/components/Layouts/AdminLayout";
 import MainLayout from "@/components/Layouts/MainLayout";
 import NotFound from "@/components/NotFound";
 
@@ -27,17 +27,14 @@ function mapRouteDef(routeDef: any): ReactRoute {
 const RenderRouter = () => {
   const routes = [
     {
-      path: "/",
-      element: <ClientLayout />,
+      path: "/admin-page",
+      element: <AdminLayout />,
       children: Object.values(privateRoutes).map(mapRouteDef),
     },
     {
       path: "/",
       element: <MainLayout />,
-      children: Object.values(publicRoutes).map(({ path, component: Component }) => ({
-        path: path.replace("/", ""),
-        element: <Component />,
-      })),
+      children: Object.values(publicRoutes).map(mapRouteDef),
     },
     {
       path: "*",
