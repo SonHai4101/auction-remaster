@@ -43,9 +43,9 @@ export const LiveAuction = () => {
         </div>
       </section>
 
-      <section className="bg-background border-b-4 border-black sticky top-20 z-40">
-        <Tabs>
-          <TabsTriggerList className="items-center p-2 border-4">
+      <Tabs>
+        <div className="w-screen sticky top-20 left-0 z-40 -mx-[50vw] bg-background border-y-4 border-black py-5">
+          <TabsTriggerList className="items-center max-w-[1202px] mx-auto">
             <span className="font-black text-black text-sm">FILTER:</span>
             <TabsTrigger>ALL AUCTIONS</TabsTrigger>
             <TabsTrigger>ACTIVE</TabsTrigger>
@@ -58,64 +58,65 @@ export const LiveAuction = () => {
               live
             </div>
           </TabsTriggerList>
-          <TabsPanels>
-            <TabsContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {isLoading ? (
-                  <div className="h-[150px] grid col-span-full place-content-center">
-                    <Loader />
-                  </div>
-                ) : allActiveAuctions?.data ? (
-                  allActiveAuctions.data.map((item) => (
-                    <AuctionCard key={item.id} auction={item} type="user" />
-                  ))
-                ) : (
-                  <div className="h-[150px] grid col-span-full place-content-center">
-                    No auctions found in this category
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-            <TabsContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {isLoading ? (
-                  <div className="h-[150px] grid col-span-full place-content-center">
-                    <Loader />
-                  </div>
-                ) : allActiveAuctions?.data ? (
-                  allActiveAuctions.data
-                    .filter(
-                      (item) =>
-                        !endingSoonAuctions.some((end) => end.id === item.id)
-                    )
-                    .map((item) => (
-                      <AuctionCard key={item.id} auction={item} type="user" />
-                    ))
-                ) : (
-                  <div className="h-[150px] grid col-span-full place-content-center">
-                    No auctions found in this category
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-            <TabsContent>
+        </div>
+
+        <TabsPanels>
+          <TabsContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {isLoading ? (
-                <div className="h-[150px] grid place-content-center">
+                <div className="h-[150px] grid col-span-full place-content-center">
                   <Loader />
                 </div>
-              ) : endingSoonAuctions.length > 0 ? (
-                endingSoonAuctions.map((item) => (
+              ) : allActiveAuctions?.data ? (
+                allActiveAuctions.data.map((item) => (
                   <AuctionCard key={item.id} auction={item} type="user" />
                 ))
               ) : (
-                <div className="h-[150px] grid place-content-center">
+                <div className="h-[150px] grid col-span-full place-content-center">
                   No auctions found in this category
                 </div>
               )}
-            </TabsContent>
-          </TabsPanels>
-        </Tabs>
-      </section>
+            </div>
+          </TabsContent>
+          <TabsContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {isLoading ? (
+                <div className="h-[150px] grid col-span-full place-content-center">
+                  <Loader />
+                </div>
+              ) : allActiveAuctions?.data ? (
+                allActiveAuctions.data
+                  .filter(
+                    (item) =>
+                      !endingSoonAuctions.some((end) => end.id === item.id)
+                  )
+                  .map((item) => (
+                    <AuctionCard key={item.id} auction={item} type="user" />
+                  ))
+              ) : (
+                <div className="h-[150px] grid col-span-full place-content-center">
+                  No auctions found in this category
+                </div>
+              )}
+            </div>
+          </TabsContent>
+          <TabsContent>
+            {isLoading ? (
+              <div className="h-[150px] grid place-content-center">
+                <Loader />
+              </div>
+            ) : endingSoonAuctions.length > 0 ? (
+              endingSoonAuctions.map((item) => (
+                <AuctionCard key={item.id} auction={item} type="user" />
+              ))
+            ) : (
+              <div className="h-[150px] grid place-content-center">
+                No auctions found in this category
+              </div>
+            )}
+          </TabsContent>
+        </TabsPanels>
+      </Tabs>
     </div>
   );
 };
