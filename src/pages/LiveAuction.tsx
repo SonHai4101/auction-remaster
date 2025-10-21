@@ -1,5 +1,6 @@
-import { AuctionCard } from "@/components/AuctionCard";
-import { Loader } from "@/components/retroui/Loader";
+import { AuctionGrid } from "@/components/AuctionGrid";
+import { BidDialog } from "@/components/BidDialog";
+import { notifyError, notifySuccess } from "@/components/CustomToast";
 import {
   Tabs,
   TabsContent,
@@ -8,12 +9,16 @@ import {
   TabsTriggerList,
 } from "@/components/retroui/Tab";
 import { useEndingSoonAuctions, useGetAllAuctions } from "@/hooks/useAuction";
+import { useCreateBid } from "@/hooks/useBid";
+import { getErrorMessage } from "@/utils/getErrorMessage";
+import { useState } from "react";
 
-// const liveAuctionTabs = [
-//   { label: "Ongoing" },
-//   { label: "Ongoing" },
-//   { label: "Ongoing" },
-// ]
+type BiddingForm = {
+  auctionId: string;
+  amount: number;
+  isAutoBid: boolean;
+  maxAmount: number;
+};
 
 export const LiveAuction = () => {
   const { data: allActiveAuctions, isLoading } = useGetAllAuctions({
@@ -21,9 +26,40 @@ export const LiveAuction = () => {
     limit: 9999,
     status: "ACTIVE",
   });
-  console.log("auction", allActiveAuctions);
-
+  const [selectAuction, setSelectAuction] = useState<string | null>(null);
   const endingSoonAuctions = useEndingSoonAuctions(allActiveAuctions?.data, 1);
+  const tabs = [
+    { label: "ALL AUCTIONS", filter: allActiveAuctions?.data },
+    {
+      label: "ACTIVE",
+      filter: allActiveAuctions?.data.filter(
+        (item) => !endingSoonAuctions.some((end) => end.id === item.id)
+      ),
+    },
+    { label: "ENDING SOON", filter: endingSoonAuctions },
+  ];
+  const { mutate: createBid, isPending: pendingBid } = useCreateBid();
+  const handleBid = (data: BiddingForm) => {
+    createBid(
+      {
+        auctionId: data.auctionId,
+        body: {
+          amount: Number(data.amount),
+          isAutoBid: data.isAutoBid,
+          maxAmount: Number(data.maxAmount),
+        },
+      },
+      {
+        onSuccess: () => {
+          setSelectAuction(null);
+          notifySuccess("Bid placed successfully");
+        },
+        onError(error) {
+          notifyError(getErrorMessage(error));
+        },
+      }
+    );
+  };
 
   return (
     <div>
@@ -42,14 +78,13 @@ export const LiveAuction = () => {
           </p>
         </div>
       </section>
-
       <Tabs>
         <div className="w-screen sticky top-20 left-0 z-40 -mx-[50vw] bg-background border-y-4 border-black py-5">
           <TabsTriggerList className="items-center max-w-[1202px] mx-auto">
             <span className="font-black text-black text-sm">FILTER:</span>
-            <TabsTrigger>ALL AUCTIONS</TabsTrigger>
-            <TabsTrigger>ACTIVE</TabsTrigger>
-            <TabsTrigger>ENDING SOON</TabsTrigger>
+            {tabs.map((tab) => (
+              <TabsTrigger key={tab.label}>{tab.label}</TabsTrigger>
+            ))}
             <div className="ml-auto text-sm font-black text-gray-600">
               {allActiveAuctions?.data.length} auction
               {allActiveAuctions?.data && allActiveAuctions.data.length > 0
@@ -59,63 +94,23 @@ export const LiveAuction = () => {
             </div>
           </TabsTriggerList>
         </div>
-
         <TabsPanels>
-          <TabsContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {isLoading ? (
-                <div className="h-[150px] grid col-span-full place-content-center">
-                  <Loader />
-                </div>
-              ) : allActiveAuctions?.data ? (
-                allActiveAuctions.data.map((item) => (
-                  <AuctionCard key={item.id} auction={item} type="user" />
-                ))
-              ) : (
-                <div className="h-[150px] grid col-span-full place-content-center">
-                  No auctions found in this category
-                </div>
-              )}
-            </div>
-          </TabsContent>
-          <TabsContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {isLoading ? (
-                <div className="h-[150px] grid col-span-full place-content-center">
-                  <Loader />
-                </div>
-              ) : allActiveAuctions?.data ? (
-                allActiveAuctions.data
-                  .filter(
-                    (item) =>
-                      !endingSoonAuctions.some((end) => end.id === item.id)
-                  )
-                  .map((item) => (
-                    <AuctionCard key={item.id} auction={item} type="user" />
-                  ))
-              ) : (
-                <div className="h-[150px] grid col-span-full place-content-center">
-                  No auctions found in this category
-                </div>
-              )}
-            </div>
-          </TabsContent>
-          <TabsContent>
-            {isLoading ? (
-              <div className="h-[150px] grid place-content-center">
-                <Loader />
-              </div>
-            ) : endingSoonAuctions.length > 0 ? (
-              endingSoonAuctions.map((item) => (
-                <AuctionCard key={item.id} auction={item} type="user" />
-              ))
-            ) : (
-              <div className="h-[150px] grid place-content-center">
-                No auctions found in this category
-              </div>
-            )}
-          </TabsContent>
+          {tabs.map((tab) => (
+            <TabsContent key={tab.label}>
+              <AuctionGrid
+                auctions={tab.filter}
+                isLoading={isLoading}
+                onBid={setSelectAuction}
+              />
+            </TabsContent>
+          ))}
         </TabsPanels>
+        <BidDialog
+          selectAuction={selectAuction}
+          setSelectAuction={setSelectAuction}
+          handleBid={handleBid}
+          pendingBid={pendingBid}
+        />
       </Tabs>
     </div>
   );

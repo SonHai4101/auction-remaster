@@ -1,7 +1,5 @@
-import { DynamicForm } from "@/components/admin/DynamicForm";
 import { AuctionCard } from "@/components/AuctionCard";
 import { Button } from "@/components/retroui/Button";
-import { Dialog } from "@/components/retroui/Dialog";
 import { Loader } from "@/components/retroui/Loader";
 import { Text } from "@/components/retroui/Text";
 import { useGetAllAuctions } from "@/hooks/useAuction";
@@ -9,11 +7,9 @@ import { useCreateBid } from "@/hooks/useBid";
 import { useRandomAuction } from "@/hooks/useRandomAuction";
 import { useState } from "react";
 import { FaArrowTrendUp } from "react-icons/fa6";
-import {
-  notifyError,
-  notifySuccess,
-} from "@/components/CustomToast";
+import { notifyError, notifySuccess } from "@/components/CustomToast";
 import { getErrorMessage } from "@/utils/getErrorMessage";
+import { BidDialog } from "@/components/BidDialog";
 
 type BiddingForm = {
   auctionId: string;
@@ -23,35 +19,7 @@ type BiddingForm = {
 };
 
 export const index = () => {
-  const bidField = [
-    {
-      name: "auctionId",
-      label: "Auction ID",
-      required: true,
-      placeholder: "",
-      readOnly: true,
-    },
-    {
-      name: "amount",
-      label: "Amount",
-      required: true,
-      placeholder: "Enter your amount",
-    },
-    {
-      name: "isAutoBid",
-      label: "Auto Bit",
-      required: false,
-      type: "switch",
-    },
-    {
-      name: "maxAmount",
-      label: "Your maximum payment amount",
-      required: false,
-      placeholder: "Enter the maximum you can pay",
-    },
-  ];
   const [selectAuction, setSelectAuction] = useState<string | null>(null);
-  // const [bidding, setBidding] = useState(false);
   const { data: allAuctions, isLoading: loadingAuctions } = useGetAllAuctions({
     page: 1,
     limit: 9999,
@@ -187,33 +155,17 @@ export const index = () => {
                 <Text as="h4">No auctions at the moment :'(</Text>
               </div>
             )}
-            <Dialog
-              open={!!selectAuction}
-              onOpenChange={(i) => !i && setSelectAuction(null)}
-            >
-              <Dialog.Content size={"md"}>
-                <Dialog.Header>
-                  <Text as="h5">Create Bid</Text>
-                </Dialog.Header>
-                {selectAuction && (
-                  <DynamicForm
-                    key={selectAuction}
-                    fields={bidField}
-                    onSubmit={handleBid}
-                    submitLabel={pendingBid ? "Bidding..." : "Bid"}
-                    defaultValues={{ auctionId: selectAuction }}
-                  />
-                )}
-              </Dialog.Content>
-            </Dialog>
+            <BidDialog
+              selectAuction={selectAuction}
+              setSelectAuction={setSelectAuction}
+              handleBid={handleBid}
+              pendingBid={pendingBid}
+            />
           </div>
         </div>
         <div className="grid place-content-center my-10">
           <Button variant="outline">View All Auctions</Button>
         </div>
-        {/* <div>
-          <Button onClick={handleModal}>Notify</Button>
-        </div> */}
       </div>
     </>
   );
