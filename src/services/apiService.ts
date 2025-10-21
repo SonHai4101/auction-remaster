@@ -63,6 +63,10 @@ export const apiService = {
       axiosInstance
         .get(`category/${params.id}/products`)
         .then((res) => res.data),
+    getAuctionsByCategoryId: (params: { id: string }): Promise<Auction[]> =>
+      axiosInstance
+        .get(`category/${params.id}/auctions`)
+        .then((res) => res.data),
     getUsers: (): Promise<User[]> =>
       axiosInstance.get("users/").then((res) => res.data),
     changeAuctionStatus: (id: string, body: { status: string }) =>

@@ -143,7 +143,7 @@ export const AuctionCard = ({
             />
           )}
           {new Date(auction.endTime).getTime() - Date.now() <=
-            60 * 60 * 1000 && (
+            60 * 60 * 1000 && auction.status === "ACTIVE" && (
             <div className="absolute bottom-0 w-[310px] h-[310px] bg-red-500/30 flex items-center justify-center">
               <span className="bg-white px-2 py-1 text-red-500 text-xl border-2 border-red-500 font-semibold animate-blink">
                 Ending Soon

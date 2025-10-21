@@ -34,7 +34,9 @@ export const Header = () => {
               Live Auctions
             </Text>
           </Link>
+          <Link to="/categories">
           <Text className="cursor-pointer hover:underline">Categories</Text>
+          </Link>
           <Text className="cursor-pointer hover:underline">Sell</Text>
         </div>
         <div className="flex gap-3">

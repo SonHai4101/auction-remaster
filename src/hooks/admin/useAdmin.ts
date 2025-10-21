@@ -73,6 +73,13 @@ export const useGetProductsByCategoryId = (id: string) => {
   });
 };
 
+export const useGetAuctionsByCategoryId = (id: string) => {
+  return useQuery({
+    queryKey: [keys.auctions, id],
+    queryFn: () => apiService.admin.getAuctionsByCategoryId({ id }),
+  });
+};
+
 export const useCreateCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({

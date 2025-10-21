@@ -4,11 +4,12 @@ import HomePage from "@/pages/HomePage";
 import { index } from "@/pages/main";
 import { AdminPage } from "@/pages/main/admin/AdminPage";
 import { Dashboard } from "@/pages/main/admin/Dashboard";
-import { Categories } from "@/pages/main/admin/Categories";
+// import { Categories } from "@/pages/main/admin/Categories";
 import { Inbox } from "@/pages/main/admin/Inbox";
 import { User } from "@/pages/main/admin/User";
 import { CategoryDetail } from "@/pages/main/admin/products/CategoryDetail";
 import { LiveAuction } from "@/pages/LiveAuction";
+import { Categories } from "@/pages/Categories";
 
 export const privateRoutes = {
   admin: {
@@ -57,7 +58,16 @@ export const publicRoutes = {
       {
         path: "/live-auctions",
         component: LiveAuction,
-        requireRedirect: true,
+      },
+      {
+        path: "/categories",
+        component: Categories,
+        children: [
+          {
+            path: ":categoryId",
+            component: CategoryDetail,
+          }
+        ]
       },
     ],
   },
