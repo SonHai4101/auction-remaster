@@ -10,6 +10,9 @@ import { User } from "@/pages/main/admin/User";
 import { CategoryDetail } from "@/pages/main/admin/products/CategoryDetail";
 import { LiveAuction } from "@/pages/LiveAuction";
 import { Categories } from "@/pages/Categories";
+import { BuyerDashboard } from "@/pages/user/BuyerDashboard";
+import { SellerDashboard } from "@/pages/user/SellerDashboard";
+import { History } from "@/pages/user/History";
 
 export const privateRoutes = {
   admin: {
@@ -58,6 +61,18 @@ export const publicRoutes = {
       {
         path: "/live-auctions",
         component: LiveAuction,
+      },
+      {
+        path: "/dashboard/buyer",
+        component: BuyerDashboard,
+      },
+      {
+        path: "/dashboard/seller",
+        component: SellerDashboard,
+      },
+      {
+        path: "/history",
+        component: History,
       },
       {
         path: "/categories",

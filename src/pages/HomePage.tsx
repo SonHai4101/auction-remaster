@@ -2,14 +2,13 @@
 // import Header from '../components/header/Header';
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import useAuthStore from "@/stores/useAuthStore";
 import { Outlet } from "react-router";
 
 const HomePage = () => {
   // const user = useAuthStore((state) => state.user);
-  const { user } = useAuthStore();
+  // const { user } = useAuthStore();
 
-  console.log("user", user);
+  // console.log("user", user);
 
   return (
     <>

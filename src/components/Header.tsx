@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router";
 import { Text } from "./retroui/Text";
 
 export const Header = () => {
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore((state) => state.user);  
   const navigate = useNavigate();
   const { logOut } = useAuthStore();
   const handleLogOut = () => {
@@ -35,9 +35,11 @@ export const Header = () => {
             </Text>
           </Link>
           <Link to="/categories">
-          <Text className="cursor-pointer hover:underline">Categories</Text>
+            <Text className="cursor-pointer hover:underline">Categories</Text>
           </Link>
-          <Text className="cursor-pointer hover:underline">Sell</Text>
+          <Link to="/sell-request">
+            <Text className="cursor-pointer hover:underline">Sell</Text>
+          </Link>
         </div>
         <div className="flex gap-3">
           <BiSolidBell />
@@ -59,6 +61,27 @@ export const Header = () => {
                   Dashboard
                 </Menu.Item>
               )}
+              <Menu.Item
+                className="text-lg gap-3"
+                onClick={() => navigate("/dashboard/buyer")}
+              >
+                <BiSolidFoodMenu />
+                Buyer Dashboard
+              </Menu.Item>
+              <Menu.Item
+                className="text-lg gap-3"
+                onClick={() => navigate("/dashboard/seller")}
+              >
+                <BiSolidFoodMenu />
+                Seller Dashboard
+              </Menu.Item>
+              <Menu.Item
+                className="text-lg gap-3"
+                onClick={() => navigate("/history")}
+              >
+                <BiSolidFoodMenu />
+                History
+              </Menu.Item>
               <Menu.Item className="text-lg gap-3" onClick={handleLogOut}>
                 <FaPowerOff />
                 Sign Out
