@@ -1,9 +1,25 @@
-// export enum shopStatus {
-//   ACTIVE = "ACTIVE",
-//   ENDED = "ENDED",
-//   DRAFT = "DRAFT",
-//   CANCELLED = "CANCELLED",
-// }
+export enum SHOPSTATUS {
+  ACTIVE = "ACTIVE",
+  ENDED = "ENDED",
+  DRAFT = "DRAFT",
+  CANCELLED = "CANCELLED",
+}
+
+export enum DURATION {
+  ONEDAYS = "ONEDAYS",
+  THREEDAYS = "THREEDAYS",
+  SEVENDAYS = "SEVENDAYS",
+  TENDAYS = "TENDAYS",
+  FOURTEENDAYS = "FOURTEENDAYS",
+}
+
+export enum CONDITION {
+  NEW = "NEW",
+  LIKENEW = "LIKENEW",
+  EXCELLENT = "EXCELLENT",
+  GOOD = "GOOD",
+  FAIR = "FAIR",
+}
 
 export interface User {
   id: string;

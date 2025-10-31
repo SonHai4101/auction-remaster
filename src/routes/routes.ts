@@ -13,6 +13,7 @@ import { Categories } from "@/pages/Categories";
 import { BuyerDashboard } from "@/pages/user/BuyerDashboard";
 import { SellerDashboard } from "@/pages/user/SellerDashboard";
 import { History } from "@/pages/user/History";
+import { Sell } from "@/pages/Sell";
 
 export const privateRoutes = {
   admin: {
@@ -61,6 +62,10 @@ export const publicRoutes = {
       {
         path: "/live-auctions",
         component: LiveAuction,
+      },
+      {
+        path: "/sell-request",
+        component: Sell,
       },
       {
         path: "/dashboard/buyer",
