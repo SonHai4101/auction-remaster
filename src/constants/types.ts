@@ -6,11 +6,11 @@ export enum SHOPSTATUS {
 }
 
 export enum DURATION {
-  ONEDAYS = "ONEDAYS",
-  THREEDAYS = "THREEDAYS",
-  SEVENDAYS = "SEVENDAYS",
-  TENDAYS = "TENDAYS",
-  FOURTEENDAYS = "FOURTEENDAYS",
+  ONEDAYS = "1 Day",
+  THREEDAYS = "3 Days",
+  SEVENDAYS = "7 Days",
+  TENDAYS = "10 Days",
+  FOURTEENDAYS = "14 Days",
 }
 
 export enum CONDITION {

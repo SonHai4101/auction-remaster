@@ -26,9 +26,20 @@ export const apiService = {
   user: {
     getUser: (): Promise<User> => axiosInstance.get("/auth/me"),
   },
-  //   auction: {
-  //     getAllAuctions: ()
-  //   }
+
+  sellRequest: {
+    createSellRequest: (body: {
+      productName: string;
+      description: string;
+      categoryId: string;
+      condition: string;
+      startPrice: number;
+      buyNowPrice: number;
+      duration: string;
+      images?: string[];
+    }) => axiosInstance.post("sell-request/create", body),
+    getAllSellRequest: (): Promise<any> => axiosInstance.get("sell-request/").then((res) => res.data)
+  },
 
   admin: {
     createAuction: (body: {

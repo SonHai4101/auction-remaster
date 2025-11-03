@@ -1,13 +1,97 @@
+import { notifyError } from "@/components/CustomToast";
 import { Button } from "@/components/retroui/Button";
-import { CONDITION } from "@/constants/types";
+import { Loader } from "@/components/retroui/Loader";
+import { CONDITION, DURATION } from "@/constants/types";
 import { useGetAllCategories } from "@/hooks/admin/useAdmin";
-import { useState } from "react";
+import { useUpload } from "@/hooks/useDefault";
+import { useCreateSellRequest } from "@/hooks/useSellRequest";
+import { getErrorMessage } from "@/utils/getErrorMessage";
+import { useRef, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 
 export const Sell = () => {
+  const formRef = useRef<HTMLFormElement>(null);
   const { data: allCategories, isLoading: categoryLoading } =
     useGetAllCategories();
+  const { mutate: createSellRequest } = useCreateSellRequest();
   const [submitted, setSubmitted] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string[]>([]);
+  const { mutateAsync: uploadImg } = useUpload();
+  const initialFormData = {
+    productName: "",
+    description: "",
+    categoryId: "",
+    condition: "",
+    startPrice: "",
+    buyNowPrice: "",
+    duration: "",
+    images: [] as File[],
+  };
+  const [formData, setFormData] = useState(initialFormData);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setFormData((prev) => ({ ...prev, images: [...prev.images, ...files] }));
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+    setImagePreview((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    let uploadedImages: string[] = [];
+    if (formData.images.length > 0) {
+      const res = await uploadImg({ files: formData.images });
+      uploadedImages = res.data;
+    }
+    createSellRequest(
+      {
+        productName: formData.productName,
+        description: formData.description,
+        categoryId: formData.categoryId,
+        condition: formData.condition,
+        startPrice: Number(formData.startPrice),
+        buyNowPrice: Number(formData.buyNowPrice),
+        duration: formData.duration,
+        images: uploadedImages,
+        // startPrice: Number(formData.startingBid),
+        // buyNowPrice: Number(formData.buyNowPrice),
+      },
+      {
+        onSuccess: () => {
+          formRef.current?.reset(),
+            setFormData(initialFormData),
+            setImagePreview([]),
+            setSubmitted(true);
+        },
+        onError(error) {
+          notifyError(getErrorMessage(error));
+        },
+      }
+    );
+  };
   return (
     <>
       <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-12">
@@ -42,7 +126,7 @@ export const Sell = () => {
               </p>
             </div>
 
-            <form className="space-y-8">
+            <form className="space-y-8" onSubmit={handleSubmit}>
               {/* Item Details Section */}
               <div className="border-4 border-black p-6 bg-white">
                 <h2 className="text-2xl font-black text-black mb-6 border-b-3 border-black pb-3">
@@ -56,9 +140,9 @@ export const Sell = () => {
                     </label>
                     <input
                       type="text"
-                      name="itemName"
-                      //   value={formData.itemName}
-                      //   onChange={handleInputChange}
+                      name="productName"
+                      value={formData.productName}
+                      onChange={handleInputChange}
                       required
                       placeholder="Enter item name"
                       className="w-full px-4 py-3 border-3 border-black bg-white text-black placeholder-gray-500 font-bold focus:outline-none focus:ring-2 focus:ring-accent"
@@ -71,8 +155,8 @@ export const Sell = () => {
                     </label>
                     <textarea
                       name="description"
-                      //   value={formData.description}
-                      //   onChange={handleInputChange}
+                      value={formData.description}
+                      onChange={handleInputChange}
                       required
                       placeholder="Describe your item in detail"
                       rows={5}
@@ -85,21 +169,28 @@ export const Sell = () => {
                       <label className="block text-sm font-black text-black mb-2">
                         Category <span className="text-red-500">*</span>
                       </label>
-                      <select
-                        name="category"
-                        // value={formData.category}
-                        // onChange={handleInputChange}
-                        required
-                        className="w-full px-4 py-3 border-3 border-black bg-white text-black font-bold focus:outline-none focus:ring-2 focus:ring-accent"
-                      >
-                        <option value="">Select a category</option>
-                        {allCategories &&
-                          allCategories.map((item) => (
-                            <option key={item.id} value={item.name}>
-                              {item.name}
-                            </option>
-                          ))}
-                      </select>
+                      {categoryLoading ? (
+                        <div className="h-[150px] grid place-content-center">
+                          <Loader />
+                        </div>
+                      ) : (
+                        <select
+                          name="categoryId"
+                          value={formData.categoryId}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border-3 border-black bg-white text-black font-bold focus:outline-none focus:ring-2 focus:ring-accent"
+                        >
+                          <option value="">Select a category</option>
+
+                          {allCategories &&
+                            allCategories.map((item) => (
+                              <option key={item.id} value={item.id}>
+                                {item.name}
+                              </option>
+                            ))}
+                        </select>
+                      )}
                     </div>
 
                     <div>
@@ -108,8 +199,8 @@ export const Sell = () => {
                       </label>
                       <select
                         name="condition"
-                        // value={formData.condition}
-                        // onChange={handleInputChange}
+                        value={formData.condition}
+                        onChange={handleInputChange}
                         required
                         className="w-full px-4 py-3 border-3 border-black bg-white text-black font-bold focus:outline-none focus:ring-2 focus:ring-accent"
                       >
@@ -119,10 +210,6 @@ export const Sell = () => {
                             {value}
                           </option>
                         ))}
-                        {/* <option value="like-new">Like New</option>
-                <option value="excellent">Excellent</option>
-                <option value="good">Good</option>
-                <option value="fair">Fair</option> */}
                       </select>
                     </div>
                   </div>
@@ -146,9 +233,9 @@ export const Sell = () => {
                       </span>
                       <input
                         type="number"
-                        name="startingBid"
-                        // value={formData.startingBid}
-                        // onChange={handleInputChange}
+                        name="startPrice"
+                        value={formData.startPrice}
+                        onChange={handleInputChange}
                         required
                         placeholder="0.00"
                         step="0.01"
@@ -169,8 +256,8 @@ export const Sell = () => {
                       <input
                         type="number"
                         name="buyNowPrice"
-                        // value={formData.buyNowPrice}
-                        // onChange={handleInputChange}
+                        value={formData.buyNowPrice}
+                        onChange={handleInputChange}
                         placeholder="0.00"
                         step="0.01"
                         min="0"
@@ -193,16 +280,22 @@ export const Sell = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <select
-                    name="auctionDuration"
-                    // value={formData.auctionDuration}
-                    // onChange={handleInputChange}
+                    name="duration"
+                    value={formData.duration}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 border-3 border-black bg-white text-black font-bold focus:outline-none focus:ring-2 focus:ring-accent"
                   >
-                    <option value="1">1 Day</option>
+                    <option value="">Select condition</option>
+                    {Object.entries(DURATION).map(([key, value]) => (
+                      <option key={key} value={key}>
+                        {value}
+                      </option>
+                    ))}
+                    {/* <option value="1">1 Day</option>
                     <option value="3">3 Days</option>
                     <option value="7">7 Days</option>
                     <option value="10">10 Days</option>
-                    <option value="14">14 Days</option>
+                    <option value="14">14 Days</option> */}
                   </select>
                 </div>
               </div>
@@ -226,31 +319,35 @@ export const Sell = () => {
                       type="file"
                       multiple
                       accept="image/*"
+                      onChange={handleImageChange}
                       className="hidden"
                     />
                   </label>
                 </div>
 
-                {/* {imagePreview.length > 0 && (
-          <div className="grid grid-cols-3 gap-4">
-            {imagePreview.map((preview, index) => (
-              <div key={index} className="relative border-3 border-black">
-                <img
-                  src={preview || "/placeholder.svg"}
-                  alt={`Preview ${index + 1}`}
-                  className="w-full h-32 object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeImage(index)}
-                  className="absolute top-1 right-1 bg-red-500 text-white w-6 h-6 flex items-center justify-center font-black border-2 border-black hover:bg-red-600"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        )} */}
+                {imagePreview.length > 0 && (
+                  <div className="grid grid-cols-3 gap-4">
+                    {imagePreview.map((preview, index) => (
+                      <div
+                        key={index}
+                        className="relative border-3 border-black"
+                      >
+                        <img
+                          src={preview || "/placeholder.svg"}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-32 object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-1 right-1 bg-red-500 text-white w-6 h-6 flex items-center justify-center font-black border-2 border-black hover:bg-red-600"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Submit Button */}
@@ -259,7 +356,7 @@ export const Sell = () => {
                   type="submit"
                   className="flex-1 bg-accent text-accent-foreground border-4 border-black font-black text-lg py-6 hover:bg-yellow-400"
                 >
-                  List Item for Auction
+                  Request for Auction
                 </Button>
                 <Button
                   type="button"
