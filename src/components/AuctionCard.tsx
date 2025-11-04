@@ -1,7 +1,7 @@
 import { Card } from "./retroui/Card";
 import { formatNumber } from "@/utils/ConvertUnit";
 import { Button } from "./retroui/Button";
-import type { Auction } from "@/constants/types";
+import { AUCTIONSTATUS, type Auction } from "@/constants/types";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -142,14 +142,14 @@ export const AuctionCard = ({
               alt="Gameboy"
             />
           )}
-          {new Date(auction.endTime).getTime() - Date.now() <=
-            60 * 60 * 1000 && auction.status === "ACTIVE" && (
-            <div className="absolute bottom-0 w-[310px] h-[310px] bg-red-500/30 flex items-center justify-center">
-              <span className="bg-white px-2 py-1 text-red-500 text-xl border-2 border-red-500 font-semibold animate-blink">
-                Ending Soon
-              </span>
-            </div>
-          )}
+          {new Date(auction.endTime).getTime() - Date.now() <= 60 * 60 * 1000 &&
+            auction.status === "ACTIVE" && (
+              <div className="absolute bottom-0 w-[310px] h-[310px] bg-red-500/30 flex items-center justify-center">
+                <span className="bg-white px-2 py-1 text-red-500 text-xl border-2 border-red-500 font-semibold animate-blink">
+                  Ending Soon
+                </span>
+              </div>
+            )}
           {auction.product?.images?.length > 1 && (
             <>
               <Button
@@ -252,7 +252,7 @@ export const AuctionCard = ({
                 </Button>
               </div>
             )}
-            {type === "admin" && (
+            {type === "admin" && auction.status !== AUCTIONSTATUS.ENDED && (
               <Select
                 onValueChange={handleChange}
                 disabled={pendingChangeStatus}
@@ -262,10 +262,11 @@ export const AuctionCard = ({
                 </Select.Trigger>
                 <Select.Content>
                   <Select.Group>
-                    <Select.Item value="ACTIVE">ACTIVE</Select.Item>
-                    <Select.Item value="DRAFT">DRAFT</Select.Item>
-                    <Select.Item value="CANCELLED">CANCELLED</Select.Item>
-                    <Select.Item value="PENDING">PENDING</Select.Item>
+                    {Object.entries(AUCTIONSTATUS).map(([key, value]) => (
+                      <Select.Item key={key} value={value}>
+                        {value}
+                      </Select.Item>
+                    ))}
                   </Select.Group>
                 </Select.Content>
               </Select>

@@ -1,6 +1,13 @@
-export enum SHOPSTATUS {
+export enum SELLREQUESTSTATUS {
+  PENDING = "PENDING",
+  APPROVE = "APPROVE",
+  REJECT = "REJECT",
+}
+
+export enum AUCTIONSTATUS {
   ACTIVE = "ACTIVE",
   ENDED = "ENDED",
+  PENDING = "PENDING",
   DRAFT = "DRAFT",
   CANCELLED = "CANCELLED",
 }
@@ -135,4 +142,22 @@ export interface Category {
   description: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface SellRequest {
+  id: string;
+  productName: string;
+  description: string;
+  categoryId: string;
+  condition: string;
+  startPrice: string;
+  buyNowPrice: string;
+  duration: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  category: Category;
+  images: Image[];
+  status: string;
+  user: User
 }

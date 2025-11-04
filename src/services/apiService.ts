@@ -4,6 +4,7 @@ import type {
   Category,
   Pagination,
   Product,
+  SellRequest,
   User,
 } from "@/constants/types";
 import { axiosInstance } from "@/lib/axios";
@@ -38,7 +39,7 @@ export const apiService = {
       duration: string;
       images?: string[];
     }) => axiosInstance.post("sell-request/create", body),
-    getAllSellRequest: (): Promise<any> => axiosInstance.get("sell-request/").then((res) => res.data)
+    getAllSellRequest: (): Promise<SellRequest[]> => axiosInstance.get("sell-request/").then((res) => res.data)
   },
 
   admin: {

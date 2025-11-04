@@ -6,6 +6,8 @@ import { HiUsers } from "react-icons/hi2";
 import { BiSolidInbox } from "react-icons/bi";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { Text } from "../retroui/Text";
+import { Badge } from "../retroui/Badge";
+import { useGetAllSellRequest } from "@/hooks/useSellRequest";
 
 export const AdminSidebar = () => {
   const sidebarItem1 = [
@@ -15,7 +17,12 @@ export const AdminSidebar = () => {
       icon: <TbLayoutDashboardFilled />,
       src: "/admin-page/",
     },
-    { id: 2, name: "Inbox", icon: <BiSolidInbox />, src: "/admin-page/inbox" },
+    {
+      id: 2,
+      name: "Request",
+      icon: <BiSolidInbox />,
+      src: "/admin-page/request",
+    },
     { id: 3, name: "Users", icon: <HiUsers />, src: "/admin-page/users" },
     {
       id: 4,
@@ -25,6 +32,7 @@ export const AdminSidebar = () => {
     },
   ];
   const { user } = useAuthStore();
+  const { data: allSellRequest } = useGetAllSellRequest();
   return (
     <div>
       <aside
@@ -33,17 +41,14 @@ export const AdminSidebar = () => {
         aria-label="Sidebar"
       >
         <div className="border-b-2 py-1">
-
           <a href="/" className="flex items-center ms-2">
             <img
-              src="/public/icon/retro-logo-transparent-bg.png"
+              src="/icon/retro-logo-transparent-bg.png"
               className="h-16"
               alt="FlowBite Logo"
             />
             <Text as="h5">AUCTION HOUSE</Text>
-
           </a>
-
         </div>
         <div className="border-b-2">
           <div className="flex gap-3 items-center p-4">
@@ -73,6 +78,11 @@ export const AdminSidebar = () => {
                     <span className="flex-1 ms-3 whitespace-nowrap">
                       {item.name}
                     </span>
+                    {item.name === "Request" && allSellRequest?.length !== 0 && (
+                      <Badge className="rounded-full bg-red-500 text-white">
+                        {allSellRequest?.length ?? 0}
+                      </Badge>
+                    )}
                   </Link>
                 ))}
               </li>
