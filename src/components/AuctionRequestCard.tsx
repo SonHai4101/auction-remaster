@@ -9,10 +9,14 @@ import { formatDateTime } from "@/utils/GetTime";
 
 interface AuctionRequestCardProps {
   auctionRequest: SellRequest;
+  onApproved: () => void;
+  onRejected: () => void;
 }
 
 export const AuctionRequestCard = ({
   auctionRequest,
+  onApproved,
+  onRejected,
 }: AuctionRequestCardProps) => {
   return (
     <Accordion.Item value={auctionRequest.id}>
@@ -112,16 +116,24 @@ export const AuctionRequestCard = ({
               </div>
             </div>
           )}
-          <div className="flex justify-between gap-4">
-            <Button className="w-full justify-center bg-green-400 gap-2">
-              <FaCheck />
-              Approve
-            </Button>
-            <Button className="w-full justify-center bg-red-400 gap-2">
-              <CgClose />
-              Reject
-            </Button>
-          </div>
+          {auctionRequest.status === "PENDING" && (
+            <div className="flex justify-between gap-4">
+              <Button
+                onClick={() => onApproved()}
+                className="w-full justify-center bg-green-400 gap-2"
+              >
+                <FaCheck />
+                Approve
+              </Button>
+              <Button
+                onClick={() => onRejected()}
+                className="w-full justify-center bg-red-400 gap-2"
+              >
+                <CgClose />
+                Reject
+              </Button>
+            </div>
+          )}
         </div>
       </Accordion.Content>
     </Accordion.Item>

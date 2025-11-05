@@ -39,7 +39,12 @@ export const apiService = {
       duration: string;
       images?: string[];
     }) => axiosInstance.post("sell-request/create", body),
-    getAllSellRequest: (): Promise<SellRequest[]> => axiosInstance.get("sell-request/").then((res) => res.data)
+    getAllSellRequest: (): Promise<SellRequest[]> =>
+      axiosInstance.get("sell-request/").then((res) => res.data),
+    approveSellRequest: (id: string) =>
+      axiosInstance.post(`/sell-request/approve/${id}`),
+    rejectSellRequest: (id: string) =>
+      axiosInstance.post(`/sell-request/reject/${id}`),
   },
 
   admin: {

@@ -27,3 +27,23 @@ export const useCreateSellRequest = () => {
     },
   });
 };
+
+export const useApproveSellRequest = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiService.sellRequest.approveSellRequest(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [keys.sellRequest] });
+    },
+  });
+};
+
+export const useRejectSellRequest = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiService.sellRequest.rejectSellRequest(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [keys.sellRequest] });
+    },
+  });
+};

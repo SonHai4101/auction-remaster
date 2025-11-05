@@ -1,4 +1,5 @@
 import { AuctionRequestCard } from "@/components/AuctionRequestCard";
+import { notifyError, notifySuccess } from "@/components/CustomToast";
 import { Accordion } from "@/components/retroui/Accordion";
 import { Card } from "@/components/retroui/Card";
 import { Loader } from "@/components/retroui/Loader";
@@ -10,7 +11,12 @@ import {
   TabsTriggerList,
 } from "@/components/retroui/Tab";
 import { Text } from "@/components/retroui/Text";
-import { useGetAllSellRequest } from "@/hooks/useSellRequest";
+import {
+  useApproveSellRequest,
+  useGetAllSellRequest,
+  useRejectSellRequest,
+} from "@/hooks/useSellRequest";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 const requestTabs = [
   { key: "TOTAL", bg: "white", des: "Total Request", label: "All Request" },
@@ -22,6 +28,29 @@ const requestTabs = [
 export const Request = () => {
   const { data: allSellRequest, isLoading: loadingSellRequest } =
     useGetAllSellRequest();
+  const { mutate: approveSellRequest } = useApproveSellRequest();
+  const { mutate: rejectSellRequest } = useRejectSellRequest();
+
+  const handleApprove = (id: string) => {
+    approveSellRequest(id, {
+      onSuccess: () => {
+        notifySuccess("The request has been approved.");
+      },
+      onError(error) {
+        notifyError(getErrorMessage(error));
+      },
+    });
+  };
+  const handleReject = (id: string) => {
+    rejectSellRequest(id, {
+      onSuccess: () => {
+        notifySuccess("The request has been rejected.");
+      },
+      onError(error) {
+        notifyError(getErrorMessage(error));
+      },
+    });
+  };
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col justify-between pb-5 border-b-4">
@@ -72,7 +101,12 @@ export const Request = () => {
                     </div>
                   ) : filterData && filterData?.length > 0 ? (
                     filterData?.map((item) => (
-                      <AuctionRequestCard key={item.id} auctionRequest={item} />
+                      <AuctionRequestCard
+                        onApproved={() => handleApprove(item.id)}
+                        onRejected={() => handleReject(item.id)}
+                        key={item.id}
+                        auctionRequest={item}
+                      />
                     ))
                   ) : (
                     <div className="h-[150px] grid place-content-center">
