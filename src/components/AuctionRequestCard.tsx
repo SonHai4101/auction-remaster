@@ -28,7 +28,7 @@ export const AuctionRequestCard = ({
               className={`text-black font-normal border-2 ${
                 auctionRequest.status === "PENDING"
                   ? "bg-yellow-300"
-                  : auctionRequest.status === "APPROVE"
+                  : auctionRequest.status === "APPROVED"
                   ? "bg-green-300"
                   : "bg-red-300"
               }`}
