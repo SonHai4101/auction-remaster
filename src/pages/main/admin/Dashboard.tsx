@@ -194,7 +194,7 @@ export const Dashboard = () => {
                         />
                       ))
                     ) : (
-                      <div className="h-[150px] grid place-content-center">
+                      <div className="h-[150px] grid col-span-full place-content-center">
                         <Text as="h4">No auction found :'(</Text>
                       </div>
                     )}

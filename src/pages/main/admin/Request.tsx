@@ -11,18 +11,22 @@ import {
   TabsTriggerList,
 } from "@/components/retroui/Tab";
 import { Text } from "@/components/retroui/Text";
+import type { DURATION, SellRequest } from "@/constants/types";
+import { useCreateAuction } from "@/hooks/admin/useAdmin";
+import { useCreateProduct } from "@/hooks/useProduct";
 import {
   useApproveSellRequest,
   useGetAllSellRequest,
   useRejectSellRequest,
 } from "@/hooks/useSellRequest";
+import { durationToMs } from "@/utils/ConvertUnit";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 
 const requestTabs = [
   { key: "TOTAL", bg: "white", des: "Total Request", label: "All Request" },
   { key: "PENDING", bg: "yellow-300", des: "Pending", label: "Pending" },
-  { key: "APPROVE", bg: "green-300", des: "Approved", label: "Approved" },
-  { key: "REJECT", bg: "red-300", des: "Rejected", label: "Rejected" },
+  { key: "APPROVED", bg: "green-300", des: "Approved", label: "Approved" },
+  { key: "REJECTED", bg: "red-300", des: "Rejected", label: "Rejected" },
 ];
 
 export const Request = () => {
@@ -30,11 +34,53 @@ export const Request = () => {
     useGetAllSellRequest();
   const { mutate: approveSellRequest } = useApproveSellRequest();
   const { mutate: rejectSellRequest } = useRejectSellRequest();
+  const { mutate: createProduct } = useCreateProduct();
+  const { mutate: createAuction } = useCreateAuction();
 
-  const handleApprove = (id: string) => {
-    approveSellRequest(id, {
+  const handleApprove = (sellReq: SellRequest) => {
+    approveSellRequest(sellReq.id, {
       onSuccess: () => {
         notifySuccess("The request has been approved.");
+
+        createProduct(
+          {
+            categoryId: sellReq.categoryId,
+            title: sellReq.productName,
+            description: sellReq.description,
+            images: sellReq.images.map((item) => item.url),
+          },
+          {
+            onSuccess: (response) => {
+              const productData = response.data;
+              const startTime = new Date(Date.now() + 10 * 60 * 1000); // 10 mins from now
+            const endTime = new Date(
+              startTime.getTime() + durationToMs(sellReq.duration as DURATION)
+            );
+              createAuction(
+                {
+                  title: sellReq.productName,
+                  description: sellReq.description,
+                  startPrice: Number(sellReq.startPrice),
+                  buyNowPrice: Number(sellReq.buyNowPrice),
+                  startTime: startTime.toISOString(),
+                  endTime: endTime.toISOString(),
+                  productId: productData.id,
+                },
+                {
+                  onSuccess: () => {
+                    notifySuccess("Auction created successfully!");
+                  },
+                  onError(error) {
+                    notifyError(getErrorMessage(error));
+                  },
+                }
+              );
+            },
+            onError(error) {
+              notifyError(getErrorMessage(error));
+            },
+          }
+        );
       },
       onError(error) {
         notifyError(getErrorMessage(error));
@@ -102,7 +148,7 @@ export const Request = () => {
                   ) : filterData && filterData?.length > 0 ? (
                     filterData?.map((item) => (
                       <AuctionRequestCard
-                        onApproved={() => handleApprove(item.id)}
+                        onApproved={() => handleApprove(item)}
                         onRejected={() => handleReject(item.id)}
                         key={item.id}
                         auctionRequest={item}
