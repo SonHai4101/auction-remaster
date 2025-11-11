@@ -8,5 +8,6 @@ export const keys = {
   product: "product",
   users: "users",
   bids: "bids",
-  sellRequest: "sellRequest"
+  sellRequest: "sellRequest",
+  notification: "notification",
 };

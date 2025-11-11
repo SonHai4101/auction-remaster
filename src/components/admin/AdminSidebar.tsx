@@ -53,7 +53,7 @@ export const AdminSidebar = () => {
         <div className="border-b-2">
           <div className="flex gap-3 items-center p-4">
             <Avatar className="h-10 w-10">
-              <Avatar.Image src="/images/avatar.jpeg" alt="Arif Logs" />
+              <Avatar.Image src={user?.avatarUrl ?? "/default_avatar.png"} alt="Arif Logs" />
               <Avatar.Fallback>AH</Avatar.Fallback>
             </Avatar>
             <div className="flex flex-col gap-1.5">

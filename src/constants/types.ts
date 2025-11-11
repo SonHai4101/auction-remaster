@@ -161,3 +161,20 @@ export interface SellRequest {
   status: string;
   user: User
 }
+
+// export interface Notification {
+//   data: NotificationData[]
+//   // pagination: Pagination
+//   unreadCount: number
+// }
+
+export interface Notification {
+  id: string
+  type: string
+  title: string
+  message: string
+  isRead: boolean
+  userId: string
+  auctionId: string
+  createdAt: string
+}

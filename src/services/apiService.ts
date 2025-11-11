@@ -2,6 +2,7 @@ import type {
   Auction,
   Bid,
   Category,
+  Notification,
   Pagination,
   Product,
   SellRequest,
@@ -154,5 +155,24 @@ export const apiService = {
         .then((res) => res.data),
     buyNow: (auctionId: string) =>
       axiosInstance.post(`bids/auction/${auctionId}/buy-now`),
+  },
+
+  notification: {
+    getAllNotifications: (query: {
+      page?: number;
+      limit?: number;
+      isRead?: boolean;
+    }): Promise<{
+      data: Notification[];
+      pagination: Pagination;
+      unreadCount: number;
+    }> =>
+      axiosInstance
+        .get("/notification", { params: query })
+        .then((res) => res.data),
+
+    read: (id: string) => axiosInstance.patch(`/notification/${id}/read`),
+
+    readAll: () => axiosInstance.patch("/notification/read-all"),
   },
 };
