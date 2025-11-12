@@ -166,6 +166,7 @@ export const apiService = {
       data: Notification[];
       pagination: Pagination;
       unreadCount: number;
+      total: number;
     }> =>
       axiosInstance
         .get("/notification", { params: query })

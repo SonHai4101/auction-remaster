@@ -9,7 +9,15 @@ import { FaPowerOff } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router";
 import { Text } from "./retroui/Text";
 import { Popover } from "./retroui/Popover";
-import { Label } from "./retroui/Label";
+import {
+  useGetAllNotifications,
+  useRead,
+  useReadAll,
+} from "@/hooks/useNotification";
+import { useState } from "react";
+import { Loader } from "./retroui/Loader";
+import { NotificationItem } from "./NotificationItem";
+import Pagination from "./Pagination";
 
 export const Header = () => {
   const user = useAuthStore((state) => state.user);
@@ -19,6 +27,17 @@ export const Header = () => {
     logOut();
     navigate("/sign-in");
   };
+  const limit = 5;
+  const [page, setPage] = useState(1);
+  const { data: allNotification, isLoading: isLoadingNotification } =
+    useGetAllNotifications({ page, limit });
+  const { mutate: read } = useRead();
+  const { mutate: readAll } = useReadAll();
+
+  const handleRead = (id: string) => {
+    read(id);
+  };
+
   return (
     <div className="sticky top-0 z-50 bg-[#633c1d] border-b-4 text-white">
       <div className="max-w-[1202px] mx-auto flex items-center justify-between ">
@@ -50,36 +69,45 @@ export const Header = () => {
                 <BiSolidBell />
               </Button>
             </Popover.Trigger>
-            <Popover.Content className="w-80 font-sans">
+            <Popover.Content className="w-80 font-sans min-w-[420px]">
               <div className="grid gap-4">
-                <div className="space-y-2">
+                <div className="flex justify-between items-center">
                   <h4 className="font-medium leading-none">Notification</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Set the dimensions for the layer.
+                  <p
+                    className="text-sm text-muted-foreground"
+                    onClick={() => readAll()}
+                  >
+                    Mark all as read
                   </p>
                 </div>
-
-                <div className="grid gap-2">
-                  <div className="grid grid-cols-3 items-center gap-4">
-                    <Label htmlFor="width">Width</Label>
-
-                    <Input
-                      id="width"
-                      defaultValue="100%"
-                      className="col-span-2 h-8"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-3 items-center gap-4">
-                    <Label htmlFor="height">Height</Label>
-
-                    <Input
-                      id="height"
-                      defaultValue="25px"
-                      className="col-span-2 h-8"
-                    />
-                  </div>
+                <div className="flex flex-col items-center gap-5">
+                  {isLoadingNotification ? (
+                    <div className="h-[150px] grid place-content-center">
+                      <Loader />
+                    </div>
+                  ) : allNotification?.data &&
+                    allNotification.data.length > 0 ? (
+                    allNotification.data.map((item) => (
+                      <NotificationItem
+                        key={item.id}
+                        onRead={() => handleRead(item.id)}
+                        notification={item}
+                      />
+                    ))
+                  ) : (
+                    <div className="h-[150px] grid place-content-center">
+                      No notification
+                    </div>
+                  )}
                 </div>
+                {allNotification?.data && allNotification.total > limit && (
+                  <Pagination
+                    currentPage={page}
+                    totalPages={Math.ceil(allNotification?.total / limit)}
+                    onPageChange={(p) => setPage(p)}
+                    justify="center"
+                  />
+                )}
               </div>
             </Popover.Content>
           </Popover>
@@ -87,7 +115,6 @@ export const Header = () => {
           <Button className="px-2">
             <RiHeart2Fill />
           </Button>
-
           <Button className="px-2">
             <PiShoppingBagOpenFill />
           </Button>
