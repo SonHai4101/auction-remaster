@@ -14,10 +14,12 @@ import {
   useRead,
   useReadAll,
 } from "@/hooks/useNotification";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader } from "./retroui/Loader";
 import { NotificationItem } from "./NotificationItem";
 import Pagination from "./Pagination";
+import { useGetAllAuctions } from "@/hooks/useAuction";
+import type { Auction } from "@/constants/types";
 
 export const Header = () => {
   const user = useAuthStore((state) => state.user);
@@ -38,17 +40,61 @@ export const Header = () => {
     read(id);
   };
 
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  // debounce search input to avoid spamming the API
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search.trim()), 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const { data: searchAuction, isLoading: isSearching } = useGetAllAuctions({
+    page: 1,
+    limit: 9999,
+    search: debouncedSearch || undefined,
+  });
+
   return (
     <div className="sticky top-0 z-50 bg-[#633c1d] border-b-4 text-white">
       <div className="max-w-[1202px] mx-auto flex items-center justify-between ">
         <Link to="/">
           <img className="h-20" src="/icon/retro-logo-transparent-bg.png" />
         </Link>
-        <Input
-          className="max-w-[300px] h-10 rounded-md bg-white text-black"
-          type="text"
-          placeholder="Search something..."
-        />
+        <div className="relative">
+          <Input
+            className="max-w-[300px] h-10 rounded-md bg-white text-black"
+            type="text"
+            placeholder="Search for auction..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          {/* Simple dropdown for search suggestions */}
+          {debouncedSearch && (
+            <div className="absolute left-0 mt-1 w-[300px] bg-white text-black rounded shadow z-50 max-h-64 overflow-auto">
+              {isSearching ? (
+                <div className="p-3">Searching...</div>
+              ) : searchAuction && searchAuction.data && searchAuction.data.length > 0 ? (
+                searchAuction.data.slice(0, 5).map((a: Auction) => (
+                  <div
+                    key={a.id}
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => {
+                      setSearch("");
+                      navigate(`/auctions/${a.id}`);
+                    }}
+                  >
+                    <div className="font-medium">{a.title} - {a.product.title}</div>
+                    <div className="text-sm text-gray-600">{a.product?.category?.name ?? ""}</div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-3">No results</div>
+              )}
+            </div>
+          )}
+        </div>
         <div className="flex gap-5">
           <Link to="/live-auctions">
             <Text className="cursor-pointer hover:underline">
@@ -74,7 +120,7 @@ export const Header = () => {
                 <div className="flex justify-between items-center">
                   <h4 className="font-medium leading-none">Notification</h4>
                   <p
-                    className="text-sm text-muted-foreground"
+                    className="text-sm text-muted-foreground hover:cursor-pointer"
                     onClick={() => readAll()}
                   >
                     Mark all as read

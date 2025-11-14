@@ -106,7 +106,7 @@ export const apiService = {
     }> =>
       axiosInstance.get("auctions/", { params: query }).then((res) => res.data),
     getAuctionById: (params: { id: string }): Promise<Auction> =>
-      axiosInstance.get(`auctions/${params.id}`),
+      axiosInstance.get(`auctions/${params.id}`).then((res) => res.data),
   },
 
   products: {

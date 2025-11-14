@@ -14,6 +14,7 @@ import { BuyerDashboard } from "@/pages/user/BuyerDashboard";
 import { SellerDashboard } from "@/pages/user/SellerDashboard";
 import { History } from "@/pages/user/History";
 import { Sell } from "@/pages/Sell";
+import { AuctionDetail } from "@/pages/AuctionDetail";
 
 export const privateRoutes = {
   admin: {
@@ -78,6 +79,10 @@ export const publicRoutes = {
       {
         path: "/history",
         component: History,
+      },
+      {
+        path: "/auction/:id",
+        component: AuctionDetail,
       },
       {
         path: "/categories",

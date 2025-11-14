@@ -22,6 +22,7 @@ import { notifyError, notifySuccess } from "./CustomToast";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { useModal } from "@ebay/nice-modal-react";
 import { AnnouncementModal } from "./AnnouncementModal";
+import { useNavigate } from "react-router";
 
 interface AuctionCardProps {
   auction: Auction;
@@ -36,6 +37,7 @@ export const AuctionCard = ({
   onBid,
   type = "admin",
 }: AuctionCardProps) => {
+  const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { mutate: deleteAuction, isPending: deletePending } =
     useDeleteAuction();
@@ -177,7 +179,7 @@ export const AuctionCard = ({
             </>
           )}
         </Card.Content>
-        <Card.Header className="pb-0">
+        <Card.Header className="pb-0 hover:cursor-pointer hover:underline" onClick={() => navigate(`/auction/${auction.id}`)}>
           <Card.Title>{auction.product.title}</Card.Title>
         </Card.Header>
         <Card.Content
