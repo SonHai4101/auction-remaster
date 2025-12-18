@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 
-function autoClearExpiredToke() {
+function autoClearExpiredToken() {
   const token = sessionStorage.getItem("accessToken");
   if (!token) return;
   if (token) {
@@ -14,5 +14,5 @@ function autoClearExpiredToke() {
   }
 }
 
-autoClearExpiredToke();
-setInterval(autoClearExpiredToke, 60 * 1000);
+autoClearExpiredToken();
+setInterval(autoClearExpiredToken, 60 * 1000);
