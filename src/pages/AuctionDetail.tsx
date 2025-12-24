@@ -5,7 +5,7 @@ import { Label } from "@/components/retroui/Label";
 import { Loader } from "@/components/retroui/Loader";
 import { Text } from "@/components/retroui/Text";
 import { useGetAuctionById } from "@/hooks/useAuction";
-import { useCreateBid } from "@/hooks/useBid";
+// import { useCreateBid } from "@/hooks/useBid";
 import { formatNumber } from "@/utils/ConvertUnit";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
@@ -19,7 +19,7 @@ export const AuctionDetail = () => {
   const params = useParams<{ id: string }>();
   const auctionId = String(params.id);
   const { data: auction, isLoading } = useGetAuctionById(auctionId);
-  const {  mutate: createBid } = useCreateBid();
+  // const {  mutate: createBid } = useCreateBid();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   return isLoading ? (
